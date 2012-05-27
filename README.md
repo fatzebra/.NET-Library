@@ -19,7 +19,7 @@ Currently there is support for:
 2. Create a new instance of the Gateway
 3. Purchase, Refund, Tokenize etc
 
-```
+```c#
 var gw = new FatZebra.Gateway("username", "token");
 
 // if you are using the sandbox, set sandbox = true

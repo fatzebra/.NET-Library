@@ -1,7 +1,5 @@
 ﻿# Fat Zebra .NET Library v1.0.0
 
-## This needs improvement, but it works....
-
 It's been a while since I've written in C#, so please excuse my code if it seems lacking in quality.
 
 Currently there is support for:
@@ -42,4 +40,12 @@ else
 	// Do something with the errors
 	Response.Write(response.Errors[0]);
 }
+
 ```
+
+## Notes
+
+Contributors, code reviewers and more are welcome - as I mentioned, this isn't my best code, but it is
+functional and passes the basic tests. Please feel free to contact me for more info at matthew.savage@fatzebra.com.au
+
+Eventually once the library is of better quality this will be added to NuGet.

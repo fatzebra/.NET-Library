@@ -29,7 +29,7 @@ namespace FatZebra.Tests
         [TestMethod]
         public void PurchaseShouldBeSuccessful()
         {
-            var response = gw.Purchase(120, "M Smith", "5123456789012346", new DateTime(2012, 05, 31), "123", Guid.NewGuid().ToString(), "123.0.0.1");
+            var response = gw.Purchase(120, "M Smith", "5123456789012346", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1");
             Assert.IsTrue(response.Successful);
             Assert.IsTrue(response.Result.Successful);
             Assert.IsNotNull(response.Result.ID);
@@ -37,6 +37,8 @@ namespace FatZebra.Tests
             Assert.AreEqual(((Purchase)response.Result).Amount, 120);
 
             Assert.AreEqual(((Purchase)response.Result).DecimalAmount, 1.20);
+
+            Assert.AreEqual(((Purchase)response.Result).CardType, "MasterCard");
         }
 
         [TestMethod]
@@ -52,17 +54,20 @@ namespace FatZebra.Tests
         [TestMethod]
         public void TokenizedCardShouldBeSuccessful()
         {
-            var response = gw.TokenizeCard("M SMith", "5123456789012346", DateTime.Now.AddYears(1), "123");
+            var response = gw.TokenizeCard("M SMith", "4005550000000001", DateTime.Now.AddYears(1), "123");
 
             Assert.IsTrue(response.Successful);
             Assert.IsTrue(response.Result.Successful);
             Assert.IsNotNull(((CreditCard)response.Result).ID);
+
+            Assert.AreEqual(((CreditCard)response.Result).CardType, "VISA");
         }
 
         [TestMethod]
         public void PurchaseWithTokenShouldBeSuccessful()
         {
             var card = gw.TokenizeCard("M SMith", "5123456789012346", DateTime.Now.AddYears(1), "123");
+            Assert.IsTrue(card.Successful);
             var response = gw.Purchase(123, card.Result.ID, "123", Guid.NewGuid().ToString(), "123.123.123.1");
 
             Assert.IsTrue(response.Successful);
@@ -72,6 +77,8 @@ namespace FatZebra.Tests
             Assert.AreEqual(((Purchase)response.Result).Amount, 123);
 
             Assert.AreEqual(((Purchase)response.Result).DecimalAmount, 1.23);
+
+            Assert.AreEqual(((Purchase)response.Result).CardType, "MasterCard");
         }
 
         [TestMethod]

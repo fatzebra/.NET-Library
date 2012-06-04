@@ -35,6 +35,28 @@ namespace FatZebra
         /// The card token
         /// </summary>
         public string CardToken { get; set; }
+
+        /// <summary>
+        /// The card type
+        /// </summary>
+        public string CardType
+        {
+            get
+            {
+                if (this.CardNumber == null) return "Unknown";
+
+                switch (this.CardNumber.ToCharArray()[0])
+                {
+                    case '4':
+                        return "VISA";
+                    case '5':
+                        return "MasterCard";
+                    default:
+                        return "Unload";
+                }
+            }
+        }
+
         /// <summary>
         /// The purchase amount as an integer
         /// </summary>

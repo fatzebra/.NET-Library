@@ -30,6 +30,27 @@ namespace FatZebra
         public string ExpiryDate { get; set; }
 
         /// <summary>
+        /// The card type
+        /// </summary>
+        public string CardType
+        {
+            get
+            {
+                if (this.CardNumber == null) return "Unknown";
+
+                switch (this.CardNumber.ToCharArray()[0])
+                {
+                    case '4':
+                        return "VISA";
+                    case '5':
+                        return "MasterCard";
+                    default:
+                        return "Unload";
+                }
+            }
+        }
+
+        /// <summary>
         /// Instantiates a new Credit Card from the json input
         /// </summary>
         /// <param name="json">Input from API calls</param>

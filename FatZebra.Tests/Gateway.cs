@@ -93,5 +93,14 @@ namespace FatZebra.Tests
             Assert.IsNotNull(refund.Result.ID);
             Assert.AreEqual(((Refund)refund.Result).Amount, -120);
         }
+
+        [TestMethod]
+        public void PlansShouldBeSuccessful()
+        {
+            var plan = gw.CreatePlan("testplan1", "tp1", "This is a test plan", 100);
+            Assert.IsTrue(plan.Successful);
+            Assert.IsNotNull(plan.Result.ID);
+            Assert.AreEqual(((Plan)plan.Result).Amount, 100);
+        }
     }
 }

@@ -129,5 +129,15 @@ namespace FatZebra
             obj.result = Refund.Parse(response["response"]);
             return obj;
         }
+
+        public static Response ParsePlan(string jsonResponse)
+        {
+            JsonValue response = JsonValue.Parse(jsonResponse);
+            var obj = ParseBase(response);
+
+            obj.result = Plan.Parse(response["response"]);
+
+            return obj;
+        }
     }
 }

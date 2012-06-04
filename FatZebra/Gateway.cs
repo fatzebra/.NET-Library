@@ -231,6 +231,13 @@ namespace FatZebra
             }
         }
 
+        /// <summary>
+        /// Performs a regund of an existing transaction.
+        /// </summary>
+        /// <param name="amount">The amount to be refunded as an integer.</param>
+        /// <param name="originalTransactionNumber">The original transaction to apply the refund against.</param>
+        /// <param name="reference">The reference for the refund.</param>
+        /// <returns>Response</returns>
         public Response Refund(int amount, string originalTransactionNumber, string reference)
         {
             var client = GetClient("refunds.json");
@@ -260,6 +267,47 @@ namespace FatZebra
             catch (WebException ex)
             {
                 return this.HandleException(ex, "Refund");
+            }
+        }
+
+        /// <summary>
+        /// Creates a new Plan
+        /// </summary>
+        /// <param name="name">The name of the plan</param>
+        /// <param name="reference">The reference</param>
+        /// <param name="description">The plan description</param>
+        /// <param name="amount">The plan amount, as an integer</param>
+        /// <returns>Response</returns>
+        public Response CreatePlan(string name, string reference, string description, int amount)
+        {
+            var client = GetClient("plans.json");
+            client.Method = "POST";
+
+            var payload = new JsonObject();
+            payload.Add("name", name);
+            payload.Add("description", description);
+            payload.Add("reference", reference);
+            payload.Add("amount", amount);
+            payload.Add("test", this.TestMode);
+
+            var reqStream = client.GetRequestStream();
+            StreamWriter sw = new StreamWriter(reqStream);
+
+            sw.Write(payload.ToString());
+            sw.Close();
+
+            try
+            {
+                var result = (HttpWebResponse)client.GetResponse();
+                var sr = new StreamReader(result.GetResponseStream());
+                var jsonResponse = sr.ReadToEnd();
+                sr.Close();
+
+                return Response.ParsePlan(jsonResponse);
+            }
+            catch (WebException ex)
+            {
+                return this.HandleException(ex, "Plan");
             }
         }
 
@@ -340,6 +388,8 @@ namespace FatZebra
                     return Response.ParseTokenized(jsonResponse);
                 case "Refund":
                     return Response.ParseRefund(jsonResponse);
+                case "Plan":
+                    return Response.ParsePlan(jsonResponse);
             }
         }
     }

@@ -46,7 +46,9 @@
   <ItemGroup>
     <Compile Include="Gateway.cs" />
     <Compile Include="Models\CreditCard.cs" />
+    <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\IRecord.cs" />
+    <Compile Include="Models\Plan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Purchase.cs" />
     <Compile Include="Models\Refund.cs" />

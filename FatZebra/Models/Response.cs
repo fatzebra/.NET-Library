@@ -130,12 +130,32 @@ namespace FatZebra
             return obj;
         }
 
+        /// <summary>
+        /// Instantiates a new response for a Plan
+        /// </summary>
+        /// <param name="jsonResponse">The Raw JSON input</param>
+        /// <returns>Response</returns>
         public static Response ParsePlan(string jsonResponse)
         {
             JsonValue response = JsonValue.Parse(jsonResponse);
             var obj = ParseBase(response);
 
             obj.result = Plan.Parse(response["response"]);
+
+            return obj;
+        }
+
+        /// <summary>
+        /// Instantiates a new response for a Customer
+        /// </summary>
+        /// <param name="jsonResponse">The Raw JSON input</param>
+        /// <returns>Response</returns>
+        public static Response ParseCustomer(string jsonResponse)
+        {
+            JsonValue response = JsonValue.Parse(jsonResponse);
+            var obj = ParseBase(response);
+
+            obj.result = Customer.Parse(response["response"]);
 
             return obj;
         }

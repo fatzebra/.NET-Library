@@ -436,7 +436,7 @@ namespace FatZebra
         {
             var client = (HttpWebRequest)System.Net.WebRequest.Create(this.GetURI(endpoint));
             client.Credentials = new System.Net.NetworkCredential(this.Username, this.Token);
-            client.Headers.Add("User-Agent", String.Format("Official .NET {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+            client.UserAgent = String.Format("Official .NET {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
             client.PreAuthenticate = true;
 
             return client;

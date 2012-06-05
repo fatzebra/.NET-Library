@@ -47,12 +47,23 @@ namespace FatZebra
         {
             var plan = new Plan();
 
-            plan.ID = json["id"].ReadAs<string>();
-            plan.Successful = true;
-            plan.Name = json["name"].ReadAs<string>();
-            plan.Description = json["description"].ReadAs<string>();
-            plan.Amount = json["amount"].ReadAs<int>(0);
-            plan.Reference = json["reference"].ReadAs<string>();
+            if (json.ContainsKey("id") && json["id"] != null)
+                plan.ID = json["id"].ReadAs<string>();
+            
+            plan.Successful = plan.ID != null;
+            
+            if (json.ContainsKey("name") && json["name"] != null)
+                plan.Name = json["name"].ReadAs<string>();
+            
+            if (json.ContainsKey("description") && json["description"] != null)
+                plan.Description = json["description"].ReadAs<string>();
+            
+            if (json.ContainsKey("amount") && json["amount"] != null)
+                plan.Amount = json["amount"].ReadAs<int>(0);
+            
+            if (json.ContainsKey("reference") && json["reference"] != null)
+                plan.Reference = json["reference"].ReadAs<string>();
+            
             return plan;
         }
     }

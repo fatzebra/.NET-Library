@@ -97,7 +97,8 @@ namespace FatZebra.Tests
         [TestMethod]
         public void PlansShouldBeSuccessful()
         {
-            var plan = gw.CreatePlan("testplan1", "tp1", "This is a test plan", 100);
+            var plan_id = Guid.NewGuid().ToString();
+            var plan = gw.CreatePlan("testplan1", plan_id, "This is a test plan", 100);
             Assert.IsTrue(plan.Successful);
             Assert.IsNotNull(plan.Result.ID);
             Assert.AreEqual(((Plan)plan.Result).Amount, 100);
@@ -106,11 +107,28 @@ namespace FatZebra.Tests
         [TestMethod]
         public void CustomerShouldBeSuccessful()
         {
-            var customer = gw.CreateCusotmer("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "5123456789012346", "Jim Smith", "123", DateTime.Now.AddYears(1));
+            var customer = gw.CreateCustomer("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
             Assert.IsTrue(customer.Successful);
             Assert.IsNotNull(customer.Result.ID);
 
             Assert.AreEqual("Jim Smith", ((Customer)customer.Result).CustomerName);
+        }
+
+        [TestMethod]
+        public void SubscriptionShouldBeSuccessful()
+        {
+            var plan_id = Guid.NewGuid().ToString();
+            var plan = gw.CreatePlan("testplan1", plan_id, "This is a test plan", 100);
+
+            var customer_id = Guid.NewGuid().ToString();
+            var customer = gw.CreateCustomer("Jim", "Smith", customer_id, "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
+
+            var sub_id = Guid.NewGuid().ToString();
+            var subscription = gw.CreateSubscription(customer_id, plan_id, "Weekly", sub_id, DateTime.Now.AddDays(1), true);
+
+            Assert.IsTrue(subscription.Successful);
+            Assert.IsNotNull(subscription.Result.ID);
+            Assert.AreEqual(sub_id, ((Subscription)subscription.Result).Reference);
         }
     }
 }

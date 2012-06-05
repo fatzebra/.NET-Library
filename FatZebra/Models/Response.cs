@@ -159,5 +159,20 @@ namespace FatZebra
 
             return obj;
         }
+
+        /// <summary>
+        /// Instantiates a new response for a Subscription
+        /// </summary>
+        /// <param name="jsonResponse">The Raw JSON input</param>
+        /// <returns>Response</returns>
+        public static Response ParseSubscription(string jsonResponse)
+        {
+            JsonValue response = JsonValue.Parse(jsonResponse);
+            var obj = ParseBase(response);
+
+            obj.result = Subscription.Parse(response["response"]);
+
+            return obj;
+        }
     }
 }

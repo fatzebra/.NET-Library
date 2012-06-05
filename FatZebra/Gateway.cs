@@ -311,7 +311,19 @@ namespace FatZebra
             }
         }
 
-        public Response CreateCusotmer(string first_name, string last_name, string reference, string email, string card_number, string card_holder, string cvv, DateTime expiry_date)
+        /// <summary>
+        /// Creates a new customer
+        /// </summary>
+        /// <param name="first_name">The customers first name</param>
+        /// <param name="last_name">The customers last name</param>
+        /// <param name="reference">Your reference (e.g. customer ID)</param>
+        /// <param name="email">The customers email address</param>
+        /// <param name="card_holder">The card holders name</param>
+        /// <param name="card_number">The customers credit card number</param>
+        /// <param name="cvv">The CVV for the card</param>
+        /// <param name="expiry_date">The expiry date for the card</param>
+        /// <returns>Response</returns>
+        public Response CreateCustomer(string first_name, string last_name, string reference, string email, string card_holder, string card_number, string cvv, DateTime expiry_date)
         {
             var client = GetClient("customers.json");
             client.Method = "POST";
@@ -351,6 +363,44 @@ namespace FatZebra
                 return this.HandleException(ex, "Customer");
             }
         }
+
+
+        public Response CreateSubscription(string customer_id, string plan_id, string frequency, string reference, DateTime start_date, bool is_active)
+        {
+            var client = GetClient("subscriptions.json");
+            client.Method = "POST";
+
+            var payload = new JsonObject();
+            payload.Add("customer", customer_id);
+            payload.Add("plan", plan_id);
+            payload.Add("reference", reference);
+            payload.Add("is_active", is_active);
+            payload.Add("start_date", start_date.ToString("yyyy-MM-dd"));
+            payload.Add("frequency", frequency);
+            payload.Add("test", this.TestMode);
+            
+
+            var reqStream = client.GetRequestStream();
+            StreamWriter sw = new StreamWriter(reqStream);
+
+            sw.Write(payload.ToString());
+            sw.Close();
+
+            try
+            {
+                var result = (HttpWebResponse)client.GetResponse();
+                var sr = new StreamReader(result.GetResponseStream());
+                var jsonResponse = sr.ReadToEnd();
+                sr.Close();
+
+                return Response.ParseSubscription(jsonResponse);
+            }
+            catch (WebException ex)
+            {
+                return this.HandleException(ex, "Subscription");
+            }
+        }
+
 
         /// <summary>
         /// Ping the Fat Zebra gateway to ensure its 'awake'
@@ -433,6 +483,8 @@ namespace FatZebra
                     return Response.ParsePlan(jsonResponse);
                 case "Customer":
                     return Response.ParseCustomer(jsonResponse);
+                case "Subscription":
+                    return Response.ParseSubscription(jsonResponse);
             }
         }
     }

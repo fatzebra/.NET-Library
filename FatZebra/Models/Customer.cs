@@ -62,13 +62,26 @@ namespace FatZebra
         public static Customer Parse(JsonValue json)
         {
             var customer = new Customer();
-            customer.FirstName = json["first_name"].ReadAs<string>();
-            customer.LastName = json["last_name"].ReadAs<string>();
-            customer.ID = json["id"].ReadAs<string>();
-            customer.Successful = true;
-            customer.Email = json["email"].ReadAs<string>();
-            customer.Reference = json["reference"].ReadAs<string>();
-            customer.CardToken = json["card_token"].ReadAs<string>();
+
+            if (json.ContainsKey("first_name") && json["first_name"] != null)
+                customer.FirstName = json["first_name"].ReadAs<string>();
+            
+            if (json.ContainsKey("last_name") && json["last_name"] != null)
+                customer.LastName = json["last_name"].ReadAs<string>();
+
+            if (json.ContainsKey("id") && json["id"] != null)
+                customer.ID = json["id"].ReadAs<string>();
+
+            customer.Successful = customer.ID != null;
+            
+            if (json.ContainsKey("email") && json["email"] != null)
+                customer.Email = json["email"].ReadAs<string>();
+
+            if (json.ContainsKey("reference") && json["reference"] != null)
+                customer.Reference = json["reference"].ReadAs<string>();
+
+            if (json.ContainsKey("card_token") && json["card_token"] != null)
+                customer.CardToken = json["card_token"].ReadAs<string>();
 
             return customer;
         }

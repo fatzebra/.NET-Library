@@ -8,6 +8,8 @@ namespace FatZebra
 {
     public class Customer : IRecord
     {
+        private bool newRecord = true;
+
         /// <summary>
         /// The customer ID
         /// </summary>
@@ -84,6 +86,20 @@ namespace FatZebra
                 customer.CardToken = json["card_token"].ReadAs<string>();
 
             return customer;
+        }
+
+        public bool Save()
+        {
+            if (newRecord)
+            {
+                // Create new record
+            }
+            else
+            {
+                // Update existing record
+            }
+
+            return true;
         }
     }
 }

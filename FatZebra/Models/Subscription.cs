@@ -58,5 +58,15 @@ namespace FatZebra
 
             return sub;
         }
+
+        public bool Cancel()
+        {
+            var payload = new JsonObject();
+            payload.Add("is_active", false);
+
+            var response = Gateway.Post(String.Format("subscriptions/{0}.json", this.ID), payload);
+
+            return response["successful"].ReadAs<bool>();
+        }
     }
 }

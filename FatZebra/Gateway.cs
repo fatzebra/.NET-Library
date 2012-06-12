@@ -12,46 +12,46 @@ using System.Reflection;
 
 namespace FatZebra
 {
-    public class Gateway
+    public static class Gateway
     {
         private const string LIVE_GATEWAY_ADDRESS = "gateway.fatzebra.com.au";
         private const string SANDBOX_GATEWAY_ADDRESS = "gateway.sandbox.fatzebra.com.au";
 
-        private string _gatewayAddress = LIVE_GATEWAY_ADDRESS;
-        private string _version = "1.0";
-        public bool VerifySSL = true;
+        private static string _gatewayAddress = LIVE_GATEWAY_ADDRESS;
+        private static string _version = "1.0";
+        public static bool VerifySSL = true;
 
         /// <summary>
         /// Enables or Disabled Test Mode
         /// </summary>
-        public bool TestMode { get; set; }
+        public static bool TestMode { get; set; }
 
         /// <summary>
         /// Enabled or Disabled Sandbox Mode
         /// </summary>
-        public bool SandboxMode { get; set; }
+        public static bool SandboxMode { get; set; }
 
         /// <summary>
         /// The API Username
         /// </summary>
-        public string Username { get; set; }
+        public static string Username { get; set; }
         /// <summary>
         /// The API Token
         /// </summary>
-        public string Token { get; set; }
+        public static string Token { get; set; }
         /// <summary>
         /// The API Version
         /// </summary>
-        public string Version { get { return _version; } }
+        public static string Version { get { return _version; } }
 
         /// <summary>
         /// The API Address
         /// </summary>
-        public string GatewayAddress
+        public static string GatewayAddress
         {
             get
             {
-                if (this.SandboxMode)
+                if (Gateway.SandboxMode)
                 {
                     return SANDBOX_GATEWAY_ADDRESS;
                 }
@@ -65,11 +65,11 @@ namespace FatZebra
         /// <summary>
         /// The API Protocol - HTTP or HTTPS
         /// </summary>
-        public string Protocol
+        public static string Protocol
         {
             get
             {
-                if (this.VerifySSL)
+                if (Gateway.VerifySSL)
                 {
                     return "https";
                 }
@@ -90,13 +90,44 @@ namespace FatZebra
         /// </summary>
         /// <param name="username">The API Username</param>
         /// <param name="token">The API Token</param>
-        public Gateway(string username, string token)
+        //public static Gateway()
+        //{
+        //    Gateway.Username = username;
+        //    Gateway.Token = token;
+        //    Gateway.SandboxMode = false;
+        //    Gateway.TestMode = false;
+        //}
+
+        public static JsonValue Post(string uri, JsonObject payload)
         {
-            this.Username = username;
-            this.Token = token;
-            this.SandboxMode = false;
-            this.TestMode = false;
+            var client = GetClient(uri);
+            client.Method = "POST";
+
+            var reqStream = client.GetRequestStream();
+            StreamWriter sw = new StreamWriter(reqStream);
+
+            sw.Write(payload.ToString());
+            sw.Close();
+
+            try
+            {
+                var result = (HttpWebResponse)client.GetResponse();
+                var sr = new StreamReader(result.GetResponseStream());
+                var jsonResponse = sr.ReadToEnd();
+                sr.Close();
+
+                return JsonValue.Parse(jsonResponse);
+            }
+            catch (WebException ex)
+            {
+                return Gateway.HandleException(ex);
+            }
         }
+
+        //public static JsonValue Get(string uri)
+        //{
+        //    return new JsonValue();
+        //}
 
         /// <summary>
         /// Purchase with card data
@@ -109,11 +140,8 @@ namespace FatZebra
         /// <param name="reference">purchase reference (invoice number or similar)</param>
         /// <param name="customer_ip">customers IP address</param>
         /// <returns>Response</returns>
-        public Response Purchase(int amount, string card_holder, string card_number, DateTime card_expiry, string cvv, string reference, string customer_ip)
+        public static Response Purchase(int amount, string card_holder, string card_number, DateTime card_expiry, string cvv, string reference, string customer_ip)
         {
-            var client = GetClient("purchases.json");
-            client.Method = "POST";
-
             var payload = new JsonObject();
             payload.Add("amount", amount);
             payload.Add("reference", reference);
@@ -123,27 +151,9 @@ namespace FatZebra
             payload.Add("card_holder", card_holder);
             payload.Add("card_expiry", card_expiry.ToString("MM/yyyy"));
             payload.Add("cvv", cvv);
-            payload.Add("test", this.TestMode);
+            payload.Add("test", Gateway.TestMode);
 
-            var reqStream = client.GetRequestStream();
-            StreamWriter sw = new StreamWriter(reqStream);
-
-            sw.Write(payload.ToString());
-            sw.Close();
-
-            try
-            {
-                var result = (HttpWebResponse)client.GetResponse();
-                var sr = new StreamReader(result.GetResponseStream());
-                var jsonResponse = sr.ReadToEnd();
-                sr.Close();
-
-                return Response.ParsePurchase(jsonResponse);
-            }
-            catch (WebException ex)
-            {
-                return this.HandleException(ex, "Purchase");
-            }
+            return Response.ParsePurchase(Gateway.Post("purchases.json", payload));
         }
 
         /// <summary>
@@ -155,11 +165,8 @@ namespace FatZebra
         /// <param name="reference">purchase reference (e.g. invoice number)</param>
         /// <param name="customer_ip">the custokers IP address</param>
         /// <returns>Response</returns>
-        public Response Purchase(int amount, string token, string cvv, string reference, string customer_ip)
+        public static Response Purchase(int amount, string token, string cvv, string reference, string customer_ip)
         {
-            var client = GetClient("purchases.json");
-            client.Method = "POST";
-
             var payload = new JsonObject();
             payload.Add("amount", amount);
             payload.Add("reference", reference);
@@ -167,27 +174,9 @@ namespace FatZebra
 
             payload.Add("card_token", token);
             payload.Add("cvv", cvv);
-            payload.Add("test", this.TestMode);
+            payload.Add("test", Gateway.TestMode);
 
-            var reqStream = client.GetRequestStream();
-            StreamWriter sw = new StreamWriter(reqStream);
-
-            sw.Write(payload.ToString());
-            sw.Close();
-
-            try
-            {
-                var result = (HttpWebResponse)client.GetResponse();
-                var sr = new StreamReader(result.GetResponseStream());
-                var jsonResponse = sr.ReadToEnd();
-                sr.Close();
-
-                return Response.ParsePurchase(jsonResponse);
-            }
-            catch (WebException ex)
-            {
-                return this.HandleException(ex, "Purchase");
-            }
+            return Response.ParsePurchase(Gateway.Post("purchases.json", payload));
         }
 
         /// <summary>
@@ -198,37 +187,16 @@ namespace FatZebra
         /// <param name="expiry">The card expiry date</param>
         /// <param name="cvv">The card CVV</param>
         /// <returns></returns>
-        public Response TokenizeCard(string card_holder, string number, DateTime expiry, string cvv)
+        public static Response TokenizeCard(string card_holder, string number, DateTime expiry, string cvv)
         {
-            var client = GetClient("credit_cards.json");
-            client.Method = "POST";
-
             var payload = new JsonObject();
             payload.Add("card_holder", card_holder);
             payload.Add("card_number", number);
             payload.Add("card_expiry", expiry.ToString("MM/yyyy"));
             payload.Add("cvv", cvv);
-            payload.Add("test", this.TestMode);
+            payload.Add("test", Gateway.TestMode);
 
-            var reqStream = client.GetRequestStream();
-            StreamWriter sw = new StreamWriter(reqStream);
-
-            sw.Write(payload.ToString());
-            sw.Close();
-
-            try
-            {
-                var result = (HttpWebResponse)client.GetResponse();
-                var sr = new StreamReader(result.GetResponseStream());
-                var jsonResponse = sr.ReadToEnd();
-                sr.Close();
-
-                return Response.ParseTokenized(jsonResponse);
-            }
-            catch (WebException ex)
-            {
-                return this.HandleException(ex, "Tokenize");
-            }
+            return Response.ParseTokenized(Gateway.Post("credit_cards.json", payload));
         }
 
         /// <summary>
@@ -238,36 +206,15 @@ namespace FatZebra
         /// <param name="originalTransactionNumber">The original transaction to apply the refund against.</param>
         /// <param name="reference">The reference for the refund.</param>
         /// <returns>Response</returns>
-        public Response Refund(int amount, string originalTransactionNumber, string reference)
+        public static Response Refund(int amount, string originalTransactionNumber, string reference)
         {
-            var client = GetClient("refunds.json");
-            client.Method = "POST";
-
             var payload = new JsonObject();
             payload.Add("transaction_id", originalTransactionNumber);
             payload.Add("amount", amount);
             payload.Add("reference", reference);
-            payload.Add("test", this.TestMode);
+            payload.Add("test", Gateway.TestMode);
 
-            var reqStream = client.GetRequestStream();
-            StreamWriter sw = new StreamWriter(reqStream);
-
-            sw.Write(payload.ToString());
-            sw.Close();
-
-            try
-            {
-                var result = (HttpWebResponse)client.GetResponse();
-                var sr = new StreamReader(result.GetResponseStream());
-                var jsonResponse = sr.ReadToEnd();
-                sr.Close();
-
-                return Response.ParseRefund(jsonResponse);
-            }
-            catch (WebException ex)
-            {
-                return this.HandleException(ex, "Refund");
-            }
+            return Response.ParseRefund(Gateway.Post("refunds.json", payload));
         }
 
         /// <summary>
@@ -278,37 +225,16 @@ namespace FatZebra
         /// <param name="description">The plan description</param>
         /// <param name="amount">The plan amount, as an integer</param>
         /// <returns>Response</returns>
-        public Response CreatePlan(string name, string reference, string description, int amount)
+        public static Response CreatePlan(string name, string reference, string description, int amount)
         {
-            var client = GetClient("plans.json");
-            client.Method = "POST";
-
             var payload = new JsonObject();
             payload.Add("name", name);
             payload.Add("description", description);
             payload.Add("reference", reference);
             payload.Add("amount", amount);
-            payload.Add("test", this.TestMode);
+            payload.Add("test", Gateway.TestMode);
 
-            var reqStream = client.GetRequestStream();
-            StreamWriter sw = new StreamWriter(reqStream);
-
-            sw.Write(payload.ToString());
-            sw.Close();
-
-            try
-            {
-                var result = (HttpWebResponse)client.GetResponse();
-                var sr = new StreamReader(result.GetResponseStream());
-                var jsonResponse = sr.ReadToEnd();
-                sr.Close();
-
-                return Response.ParsePlan(jsonResponse);
-            }
-            catch (WebException ex)
-            {
-                return this.HandleException(ex, "Plan");
-            }
+            return Response.ParsePlan(Gateway.Post("plans.json", payload));
         }
 
         /// <summary>
@@ -323,11 +249,8 @@ namespace FatZebra
         /// <param name="cvv">The CVV for the card</param>
         /// <param name="expiry_date">The expiry date for the card</param>
         /// <returns>Response</returns>
-        public Response CreateCustomer(string first_name, string last_name, string reference, string email, string card_holder, string card_number, string cvv, DateTime expiry_date)
+        public static Response CreateCustomer(string first_name, string last_name, string reference, string email, string card_holder, string card_number, string cvv, DateTime expiry_date)
         {
-            var client = GetClient("customers.json");
-            client.Method = "POST";
-
             var payload = new JsonObject();
             payload.Add("first_name", first_name);
             payload.Add("last_name", last_name);
@@ -341,35 +264,15 @@ namespace FatZebra
 
             payload.Add("card", card);
 
-            payload.Add("test", this.TestMode);
+            payload.Add("test", Gateway.TestMode);
 
-            var reqStream = client.GetRequestStream();
-            StreamWriter sw = new StreamWriter(reqStream);
-
-            sw.Write(payload.ToString());
-            sw.Close();
-
-            try
-            {
-                var result = (HttpWebResponse)client.GetResponse();
-                var sr = new StreamReader(result.GetResponseStream());
-                var jsonResponse = sr.ReadToEnd();
-                sr.Close();
-
-                return Response.ParseCustomer(jsonResponse);
-            }
-            catch (WebException ex)
-            {
-                return this.HandleException(ex, "Customer");
-            }
+            return Response.ParseCustomer(Gateway.Post("customers.json", payload));
         }
 
 
-        public Response CreateSubscription(string customer_id, string plan_id, string frequency, string reference, DateTime start_date, bool is_active)
+        public static Response CreateSubscription(string customer_id, string plan_id, string frequency, string reference, DateTime start_date, bool is_active)
         {
-            var client = GetClient("subscriptions.json");
-            client.Method = "POST";
-
+            
             var payload = new JsonObject();
             payload.Add("customer", customer_id);
             payload.Add("plan", plan_id);
@@ -377,28 +280,9 @@ namespace FatZebra
             payload.Add("is_active", is_active);
             payload.Add("start_date", start_date.ToString("yyyy-MM-dd"));
             payload.Add("frequency", frequency);
-            payload.Add("test", this.TestMode);
-            
+            payload.Add("test", Gateway.TestMode);
 
-            var reqStream = client.GetRequestStream();
-            StreamWriter sw = new StreamWriter(reqStream);
-
-            sw.Write(payload.ToString());
-            sw.Close();
-
-            try
-            {
-                var result = (HttpWebResponse)client.GetResponse();
-                var sr = new StreamReader(result.GetResponseStream());
-                var jsonResponse = sr.ReadToEnd();
-                sr.Close();
-
-                return Response.ParseSubscription(jsonResponse);
-            }
-            catch (WebException ex)
-            {
-                return this.HandleException(ex, "Subscription");
-            }
+            return Response.ParseSubscription(Gateway.Post("subscriptions.json", payload));
         }
 
 
@@ -406,11 +290,11 @@ namespace FatZebra
         /// Ping the Fat Zebra gateway to ensure its 'awake'
         /// </summary>
         /// <returns>true or false - if an exception occurrs we just let it through</returns>
-        public bool Ping()
+        public static bool Ping()
         {
             bool success = false;
 
-            var response = (HttpWebResponse)this.GetClient("ping.json").GetResponse();
+            var response = (HttpWebResponse)Gateway.GetClient("ping.json").GetResponse();
             success = response.StatusCode == HttpStatusCode.OK;
 
             return success;
@@ -422,9 +306,9 @@ namespace FatZebra
         /// </summary>
         /// <param name="endpoint">The endpoint of the request.</param>
         /// <returns>URI string</returns>
-        private string GetURI(string endpoint)
+        private static string GetURI(string endpoint)
         {
-            return String.Format("{0}://{1}/v{2}/{3}", this.Protocol, this.GatewayAddress, this.Version, endpoint);
+            return String.Format("{0}://{1}/v{2}/{3}", Gateway.Protocol, Gateway.GatewayAddress, Gateway.Version, endpoint);
         }
 
         /// <summary>
@@ -432,10 +316,10 @@ namespace FatZebra
         /// </summary>
         /// <param name="endpoint">The end point of the request.</param>
         /// <returns>HttpWebRequest</returns>
-        private HttpWebRequest GetClient(string endpoint)
+        private static HttpWebRequest GetClient(string endpoint)
         {
-            var client = (HttpWebRequest)System.Net.WebRequest.Create(this.GetURI(endpoint));
-            client.Credentials = new System.Net.NetworkCredential(this.Username, this.Token);
+            var client = (HttpWebRequest)System.Net.WebRequest.Create(Gateway.GetURI(endpoint));
+            client.Credentials = new System.Net.NetworkCredential(Gateway.Username, Gateway.Token);
             client.UserAgent = String.Format("Official .NET {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
             client.PreAuthenticate = true;
 
@@ -446,9 +330,8 @@ namespace FatZebra
         /// Handles a WebException - if the exception is a 401 it raises an Auth exception, otherwise it tries to parse the error response.
         /// </summary>
         /// <param name="ex">The exception</param>
-        /// <param name="requestType">The request type</param>
-        /// <returns>Response or raises exception</returns>
-        private Response HandleException(WebException ex, string requestType)
+        /// <returns>JsonValue or raises exception</returns>
+        private static JsonValue HandleException(WebException ex)
         {
             var response = (HttpWebResponse)ex.Response;
             HttpStatusCode code = response.StatusCode;
@@ -471,21 +354,7 @@ namespace FatZebra
             var jsonResponse = sr.ReadToEnd();
             sr.Close();
 
-            switch(requestType) {
-                case "Purchase":
-                default:
-                    return Response.ParsePurchase(jsonResponse);
-                case "Tokenize":
-                    return Response.ParseTokenized(jsonResponse);
-                case "Refund":
-                    return Response.ParseRefund(jsonResponse);
-                case "Plan":
-                    return Response.ParsePlan(jsonResponse);
-                case "Customer":
-                    return Response.ParseCustomer(jsonResponse);
-                case "Subscription":
-                    return Response.ParseSubscription(jsonResponse);
-            }
+            return JsonValue.Parse(jsonResponse);
         }
     }
 }

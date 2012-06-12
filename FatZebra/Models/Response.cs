@@ -62,9 +62,8 @@ namespace FatZebra
         /// </summary>
         /// <param name="jsonResponse">The Raw JSON input</param>
         /// <returns>Response</returns>
-        public static Response ParsePurchase(string jsonResponse)
+        public static Response ParsePurchase(JsonValue response)
         {
-            JsonValue response = JsonArray.Parse(jsonResponse);
             Response obj = ParseBase(response);
 
             obj.result = Purchase.Parse(response["response"]);
@@ -106,9 +105,8 @@ namespace FatZebra
         /// </summary>
         /// <param name="jsonResponse">The Raw JSON input</param>
         /// <returns>Response</returns>
-        public static Response ParseTokenized(string jsonResponse)
+        public static Response ParseTokenized(JsonValue response)
         {
-            JsonValue response = JsonValue.Parse(jsonResponse);
             var obj = ParseBase(response);
 
             obj.result = CreditCard.Parse(response["response"]);
@@ -121,9 +119,8 @@ namespace FatZebra
         /// </summary>
         /// <param name="jsonResponse">The Raw JSON input</param>
         /// <returns>Response</returns>
-        public static Response ParseRefund(string jsonResponse)
+        public static Response ParseRefund(JsonValue response)
         {
-            JsonValue response = JsonValue.Parse(jsonResponse);
             var obj = ParseBase(response);
 
             obj.result = Refund.Parse(response["response"]);
@@ -135,9 +132,8 @@ namespace FatZebra
         /// </summary>
         /// <param name="jsonResponse">The Raw JSON input</param>
         /// <returns>Response</returns>
-        public static Response ParsePlan(string jsonResponse)
+        public static Response ParsePlan(JsonValue response)
         {
-            JsonValue response = JsonValue.Parse(jsonResponse);
             var obj = ParseBase(response);
 
             obj.result = Plan.Parse(response["response"]);
@@ -150,9 +146,8 @@ namespace FatZebra
         /// </summary>
         /// <param name="jsonResponse">The Raw JSON input</param>
         /// <returns>Response</returns>
-        public static Response ParseCustomer(string jsonResponse)
+        public static Response ParseCustomer(JsonValue response)
         {
-            JsonValue response = JsonValue.Parse(jsonResponse);
             var obj = ParseBase(response);
 
             obj.result = Customer.Parse(response["response"]);
@@ -165,9 +160,8 @@ namespace FatZebra
         /// </summary>
         /// <param name="jsonResponse">The Raw JSON input</param>
         /// <returns>Response</returns>
-        public static Response ParseSubscription(string jsonResponse)
+        public static Response ParseSubscription(JsonValue response)
         {
-            JsonValue response = JsonValue.Parse(jsonResponse);
             var obj = ParseBase(response);
 
             obj.result = Subscription.Parse(response["response"]);

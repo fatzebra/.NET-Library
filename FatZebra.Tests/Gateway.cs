@@ -8,28 +8,29 @@ using FatZebra;
 namespace FatZebra.Tests
 {
     [TestClass]
-    public class Gateway
+    public class GatewayTest
     {
-        private FatZebra.Gateway gw;
 
         [TestInitialize]
         public void Init()
         {
-            gw = new FatZebra.Gateway("TEST", "TEST");
-            gw.SandboxMode = true;
-            gw.TestMode = true;
+
+            FatZebra.Gateway.Username = "TEST";
+            FatZebra.Gateway.Token = "TEST";
+            Gateway.SandboxMode = true;
+            Gateway.TestMode = true;
         }
 
         [TestMethod]
         public void PingShouldBeSuccessful()
         {
-            Assert.IsTrue(gw.Ping());
+            Assert.IsTrue(Gateway.Ping());
         }
 
         [TestMethod]
         public void PurchaseShouldBeSuccessful()
         {
-            var response = gw.Purchase(120, "M Smith", "5123456789012346", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1");
+            var response = Gateway.Purchase(120, "M Smith", "5123456789012346", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1");
             Assert.IsTrue(response.Successful);
             Assert.IsTrue(response.Result.Successful);
             Assert.IsNotNull(response.Result.ID);
@@ -44,7 +45,7 @@ namespace FatZebra.Tests
         [TestMethod]
         public void PurchaseShouldReturnErrors()
         {
-            var response = gw.Purchase(120, "M Smith", "", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1");
+            var response = Gateway.Purchase(120, "M Smith", "", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1");
             Assert.IsFalse(response.Successful);
             Assert.IsFalse(response.Result.Successful);
             Assert.IsNotNull(response.Result.ID);
@@ -54,7 +55,7 @@ namespace FatZebra.Tests
         [TestMethod]
         public void TokenizedCardShouldBeSuccessful()
         {
-            var response = gw.TokenizeCard("M SMith", "4005550000000001", DateTime.Now.AddYears(1), "123");
+            var response = Gateway.TokenizeCard("M SMith", "4005550000000001", DateTime.Now.AddYears(1), "123");
 
             Assert.IsTrue(response.Successful);
             Assert.IsTrue(response.Result.Successful);
@@ -66,9 +67,9 @@ namespace FatZebra.Tests
         [TestMethod]
         public void PurchaseWithTokenShouldBeSuccessful()
         {
-            var card = gw.TokenizeCard("M SMith", "5123456789012346", DateTime.Now.AddYears(1), "123");
+            var card = Gateway.TokenizeCard("M SMith", "5123456789012346", DateTime.Now.AddYears(1), "123");
             Assert.IsTrue(card.Successful);
-            var response = gw.Purchase(123, card.Result.ID, "123", Guid.NewGuid().ToString(), "123.123.123.1");
+            var response = Gateway.Purchase(123, card.Result.ID, "123", Guid.NewGuid().ToString(), "123.123.123.1");
 
             Assert.IsTrue(response.Successful);
             Assert.IsTrue(response.Result.Successful);
@@ -84,9 +85,9 @@ namespace FatZebra.Tests
         [TestMethod]
         public void RefundShouldBeSuccessful()
         {
-            var purchase = gw.Purchase(120, "M Smith", "5123456789012346", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1");
+            var purchase = Gateway.Purchase(120, "M Smith", "5123456789012346", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1");
 
-            var refund = gw.Refund(120, purchase.Result.ID, "Refund" + Guid.NewGuid().ToString());
+            var refund = Gateway.Refund(120, purchase.Result.ID, "Refund" + Guid.NewGuid().ToString());
 
             Assert.IsTrue(refund.Successful);
             Assert.IsTrue(refund.Result.Successful);
@@ -98,7 +99,7 @@ namespace FatZebra.Tests
         public void PlansShouldBeSuccessful()
         {
             var plan_id = Guid.NewGuid().ToString();
-            var plan = gw.CreatePlan("testplan1", plan_id, "This is a test plan", 100);
+            var plan = Gateway.CreatePlan("testplan1", plan_id, "This is a test plan", 100);
             Assert.IsTrue(plan.Successful);
             Assert.IsNotNull(plan.Result.ID);
             Assert.AreEqual(((Plan)plan.Result).Amount, 100);
@@ -107,7 +108,7 @@ namespace FatZebra.Tests
         [TestMethod]
         public void CustomerShouldBeSuccessful()
         {
-            var customer = gw.CreateCustomer("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
+            var customer = Gateway.CreateCustomer("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
             Assert.IsTrue(customer.Successful);
             Assert.IsNotNull(customer.Result.ID);
 
@@ -118,13 +119,13 @@ namespace FatZebra.Tests
         public void SubscriptionShouldBeSuccessful()
         {
             var plan_id = Guid.NewGuid().ToString();
-            var plan = gw.CreatePlan("testplan1", plan_id, "This is a test plan", 100);
+            var plan = Gateway.CreatePlan("testplan1", plan_id, "This is a test plan", 100);
 
             var customer_id = Guid.NewGuid().ToString();
-            var customer = gw.CreateCustomer("Jim", "Smith", customer_id, "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
+            var customer = Gateway.CreateCustomer("Jim", "Smith", customer_id, "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
 
             var sub_id = Guid.NewGuid().ToString();
-            var subscription = gw.CreateSubscription(customer_id, plan_id, "Weekly", sub_id, DateTime.Now.AddDays(1), true);
+            var subscription = Gateway.CreateSubscription(customer_id, plan_id, "Weekly", sub_id, DateTime.Now.AddDays(1), true);
 
             Assert.IsTrue(subscription.Successful);
             Assert.IsNotNull(subscription.Result.ID);

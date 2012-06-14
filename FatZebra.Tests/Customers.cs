@@ -38,5 +38,14 @@ namespace FatZebra.Tests
 
             Assert.AreEqual(cust1.CustomerName, cust2.CustomerName);
         }
+
+        [TestMethod]
+        public void ShouldUpdateACustomersCard()
+        {
+            var customer = Gateway.CreateCustomer("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
+            var cust = ((Customer)customer.Result);
+
+            Assert.IsTrue(cust.UpdateCard("Wally Smith", "345678901234564", DateTime.Now.AddYears(1), "1234"));
+        }
     }
 }

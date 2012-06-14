@@ -63,5 +63,23 @@ namespace FatZebra
 
             return obj;
         }
+
+        /// <summary>
+        /// Performs a refund of an existing transaction.
+        /// </summary>
+        /// <param name="amount">The amount to be refunded as an integer.</param>
+        /// <param name="originalTransactionNumber">The original transaction to apply the refund against.</param>
+        /// <param name="reference">The reference for the refund.</param>
+        /// <returns>Response</returns>
+        public static Response Create(int amount, string originalTransactionNumber, string reference)
+        {
+            var payload = new JsonObject();
+            payload.Add("transaction_id", originalTransactionNumber);
+            payload.Add("amount", amount);
+            payload.Add("reference", reference);
+            payload.Add("test", Gateway.TestMode);
+
+            return Response.ParseRefund(Gateway.Post("refunds.json", payload));
+        }
     }
 }

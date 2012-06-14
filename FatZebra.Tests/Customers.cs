@@ -21,7 +21,7 @@ namespace FatZebra.Tests
         [TestMethod]
         public void CustomerShouldBeSuccessful()
         {
-            var customer = Gateway.CreateCustomer("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
+            var customer = Customer.Create("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
             Assert.IsTrue(customer.Successful);
             Assert.IsNotNull(customer.Result.ID);
 
@@ -31,7 +31,7 @@ namespace FatZebra.Tests
         [TestMethod]
         public void ShouldFindACustomer()
         {
-            var customer = Gateway.CreateCustomer("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
+            var customer = Customer.Create("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
 
             var cust1 = ((Customer)customer.Result);
             var cust2 = Customer.Find(cust1.ID);
@@ -42,7 +42,7 @@ namespace FatZebra.Tests
         [TestMethod]
         public void ShouldUpdateACustomersCard()
         {
-            var customer = Gateway.CreateCustomer("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
+            var customer = Customer.Create("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
             var cust = ((Customer)customer.Result);
 
             Assert.IsTrue(cust.UpdateCard("Wally Smith", "345678901234564", DateTime.Now.AddYears(1), "1234"));

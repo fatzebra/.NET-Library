@@ -66,5 +66,45 @@ namespace FatZebra
             
             return plan;
         }
+
+        /// <summary>
+        /// Creates a new Plan
+        /// </summary>
+        /// <param name="name">The name of the plan</param>
+        /// <param name="reference">The reference</param>
+        /// <param name="description">The plan description</param>
+        /// <param name="amount">The plan amount, as an integer</param>
+        /// <returns>Response</returns>
+        public static Response Create(string name, string reference, string description, int amount)
+        {
+            var payload = new JsonObject();
+            payload.Add("name", name);
+            payload.Add("description", description);
+            payload.Add("reference", reference);
+            payload.Add("amount", amount);
+            payload.Add("test", Gateway.TestMode);
+
+            return Response.ParsePlan(Gateway.Post("plans.json", payload));
+        }
+
+        /// <summary>
+        /// Find a Plan
+        /// </summary>
+        /// <param name="ID">The Plan ID</param>
+        /// <returns>Plan</returns>
+        public static Plan Find(string ID)
+        {
+            var response = Gateway.Get(String.Format("plans/{0}.json", ID));
+            var respBase = Response.ParseBase(response);
+
+            if (respBase.Successful)
+            {
+                return Plan.Parse(response["response"]);
+            }
+            else
+            {
+                throw new Exception(String.Format("Error fetching plan: {0}", respBase.Errors));
+            }
+        }
     }
 }

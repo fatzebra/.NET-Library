@@ -72,5 +72,25 @@ namespace FatZebra
 
             return obj;
         }
+
+        /// <summary>
+        /// Tokenizes a Credit Card Number to be used with Purchase(amount, token, cvv, reference, customer_ip)
+        /// </summary>
+        /// <param name="card_holder">The card holders name</param>
+        /// <param name="number">The card number</param>
+        /// <param name="expiry">The card expiry date</param>
+        /// <param name="cvv">The card CVV</param>
+        /// <returns></returns>
+        public static Response Create(string card_holder, string number, DateTime expiry, string cvv)
+        {
+            var payload = new JsonObject();
+            payload.Add("card_holder", card_holder);
+            payload.Add("card_number", number);
+            payload.Add("card_expiry", expiry.ToString("MM/yyyy"));
+            payload.Add("cvv", cvv);
+            payload.Add("test", Gateway.TestMode);
+
+            return Response.ParseTokenized(Gateway.Post("credit_cards.json", payload));
+        }
     }
 }

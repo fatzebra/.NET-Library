@@ -109,6 +109,38 @@ namespace FatZebra
         }
 
         /// <summary>
+        /// Create a new Customer
+        /// </summary>
+        /// <param name="first_name">The customers first name</param>
+        /// <param name="last_name">The customers last name</param>
+        /// <param name="reference">Your reference for the customer</param>
+        /// <param name="email">The customer email address</param>
+        /// <param name="card_holder">The card holders name</param>
+        /// <param name="card_number">The card number</param>
+        /// <param name="cvv">The CVV</param>
+        /// <param name="expiry_date">The card expiry date</param>
+        /// <returns>Response</returns>
+        public static Response Create(string first_name, string last_name, string reference, string email, string card_holder, string card_number, string cvv, DateTime expiry_date)
+        {
+            var payload = new JsonObject();
+            payload.Add("first_name", first_name);
+            payload.Add("last_name", last_name);
+            payload.Add("reference", reference);
+            payload.Add("email", email);
+            var card = new JsonObject();
+            card.Add("card_number", card_number);
+            card.Add("card_holder", card_holder);
+            card.Add("cvv", cvv);
+            card.Add("expiry_date", expiry_date.ToString("MM/yyyy"));
+
+            payload.Add("card", card);
+
+            payload.Add("test", Gateway.TestMode);
+
+            return Response.ParseCustomer(Gateway.Post("customers.json", payload));
+        }
+
+        /// <summary>
         /// Updates the customers credit card
         /// </summary>
         /// <param name="card_holder">The card holders name</param>

@@ -8,7 +8,7 @@ using FatZebra;
 namespace FatZebra.Tests
 {
     [TestClass]
-    public class GatewayTest
+    public class CreditCardsTest
     {
 
         [TestInitialize]
@@ -21,9 +21,15 @@ namespace FatZebra.Tests
         }
 
         [TestMethod]
-        public void PingShouldBeSuccessful()
+        public void TokenizedCardShouldBeSuccessful()
         {
-            Assert.IsTrue(Gateway.Ping());
+            var response = CreditCard.Create("M SMith", "4005550000000001", DateTime.Now.AddYears(1), "123");
+
+            Assert.IsTrue(response.Successful);
+            Assert.IsTrue(response.Result.Successful);
+            Assert.IsNotNull(((CreditCard)response.Result).ID);
+
+            Assert.AreEqual(((CreditCard)response.Result).CardType, "VISA");
         }
     }
 }

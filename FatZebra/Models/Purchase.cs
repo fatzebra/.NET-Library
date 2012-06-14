@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Json;
 
 namespace FatZebra
 {
-    public class Purchase :IRecord
+    public class Purchase : IRecord
     {
         /// <summary>
         /// The purchase transaction ID
@@ -107,6 +108,67 @@ namespace FatZebra
                 obj.Reference = json["reference"].ReadAs<string>();
 
             return obj;
+        }
+
+        /// <summary>
+        /// Purchase with card data
+        /// </summary>
+        /// <param name="amount">purchase amount as an integer</param>
+        /// <param name="card_holder">card holders name</param>
+        /// <param name="card_number">card number</param>
+        /// <param name="card_expiry">card expiry</param>
+        /// <param name="cvv">CVV number</param>
+        /// <param name="reference">purchase reference (invoice number or similar)</param>
+        /// <param name="customer_ip">customers IP address</param>
+        /// <returns>Response</returns>
+        public static Response Create(int amount, string card_holder, string card_number, DateTime card_expiry, string cvv, string reference, string customer_ip)
+        {
+            var payload = new JsonObject();
+            payload.Add("amount", amount);
+            payload.Add("reference", reference);
+            payload.Add("customer_ip", customer_ip);
+
+            payload.Add("card_number", card_number);
+            payload.Add("card_holder", card_holder);
+            payload.Add("card_expiry", card_expiry.ToString("MM/yyyy"));
+            payload.Add("cvv", cvv);
+            payload.Add("test", Gateway.TestMode);
+
+            return Response.ParsePurchase(Gateway.Post("purchases.json", payload));
+        }
+
+        /// <summary>
+        /// Purchase with a tokenized card
+        /// </summary>
+        /// <param name="amount">purchase amount as integer</param>
+        /// <param name="token">card token</param>
+        /// <param name="cvv">card CVV</param>
+        /// <param name="reference">purchase reference (e.g. invoice number)</param>
+        /// <param name="customer_ip">the custokers IP address</param>
+        /// <returns>Response</returns>
+        public static Response Create(int amount, string token, string cvv, string reference, string customer_ip)
+        {
+            var payload = new JsonObject();
+            payload.Add("amount", amount);
+            payload.Add("reference", reference);
+            payload.Add("customer_ip", customer_ip);
+
+            payload.Add("card_token", token);
+            payload.Add("cvv", cvv);
+            payload.Add("test", Gateway.TestMode);
+
+            return Response.ParsePurchase(Gateway.Post("purchases.json", payload));
+        }
+
+        /// <summary>
+        /// Refunds the current transaction
+        /// </summary>
+        /// <param name="amount">The amount to refund</param>
+        /// <param name="reference">The reference for the refund</param>
+        /// <returns>Response</returns>
+        public Response Refund(int amount, string reference)
+        {
+            return FatZebra.Refund.Create(amount, this.ID, reference);
         }
     }
 }

@@ -174,155 +174,7 @@ namespace FatZebra
         }
 
         /// <summary>
-        /// Purchase with card data
-        /// </summary>
-        /// <param name="amount">purchase amount as an integer</param>
-        /// <param name="card_holder">card holders name</param>
-        /// <param name="card_number">card number</param>
-        /// <param name="card_expiry">card expiry</param>
-        /// <param name="cvv">CVV number</param>
-        /// <param name="reference">purchase reference (invoice number or similar)</param>
-        /// <param name="customer_ip">customers IP address</param>
-        /// <returns>Response</returns>
-        public static Response Purchase(int amount, string card_holder, string card_number, DateTime card_expiry, string cvv, string reference, string customer_ip)
-        {
-            var payload = new JsonObject();
-            payload.Add("amount", amount);
-            payload.Add("reference", reference);
-            payload.Add("customer_ip", customer_ip);
-            
-            payload.Add("card_number", card_number);
-            payload.Add("card_holder", card_holder);
-            payload.Add("card_expiry", card_expiry.ToString("MM/yyyy"));
-            payload.Add("cvv", cvv);
-            payload.Add("test", Gateway.TestMode);
-
-            return Response.ParsePurchase(Gateway.Post("purchases.json", payload));
-        }
-
-        /// <summary>
-        /// Purchase with a tokenized card
-        /// </summary>
-        /// <param name="amount">purchase amount as integer</param>
-        /// <param name="token">card token</param>
-        /// <param name="cvv">card CVV</param>
-        /// <param name="reference">purchase reference (e.g. invoice number)</param>
-        /// <param name="customer_ip">the custokers IP address</param>
-        /// <returns>Response</returns>
-        public static Response Purchase(int amount, string token, string cvv, string reference, string customer_ip)
-        {
-            var payload = new JsonObject();
-            payload.Add("amount", amount);
-            payload.Add("reference", reference);
-            payload.Add("customer_ip", customer_ip);
-
-            payload.Add("card_token", token);
-            payload.Add("cvv", cvv);
-            payload.Add("test", Gateway.TestMode);
-
-            return Response.ParsePurchase(Gateway.Post("purchases.json", payload));
-        }
-
-        /// <summary>
-        /// Tokenizes a Credit Card Number to be used with Purchase(amount, token, cvv, reference, customer_ip)
-        /// </summary>
-        /// <param name="card_holder">The card holders name</param>
-        /// <param name="number">The card number</param>
-        /// <param name="expiry">The card expiry date</param>
-        /// <param name="cvv">The card CVV</param>
-        /// <returns></returns>
-        public static Response TokenizeCard(string card_holder, string number, DateTime expiry, string cvv)
-        {
-            var payload = new JsonObject();
-            payload.Add("card_holder", card_holder);
-            payload.Add("card_number", number);
-            payload.Add("card_expiry", expiry.ToString("MM/yyyy"));
-            payload.Add("cvv", cvv);
-            payload.Add("test", Gateway.TestMode);
-
-            return Response.ParseTokenized(Gateway.Post("credit_cards.json", payload));
-        }
-
-        /// <summary>
-        /// Performs a regund of an existing transaction.
-        /// </summary>
-        /// <param name="amount">The amount to be refunded as an integer.</param>
-        /// <param name="originalTransactionNumber">The original transaction to apply the refund against.</param>
-        /// <param name="reference">The reference for the refund.</param>
-        /// <returns>Response</returns>
-        public static Response Refund(int amount, string originalTransactionNumber, string reference)
-        {
-            var payload = new JsonObject();
-            payload.Add("transaction_id", originalTransactionNumber);
-            payload.Add("amount", amount);
-            payload.Add("reference", reference);
-            payload.Add("test", Gateway.TestMode);
-
-            return Response.ParseRefund(Gateway.Post("refunds.json", payload));
-        }
-
-        /// <summary>
-        /// Creates a new Plan
-        /// </summary>
-        /// <param name="name">The name of the plan</param>
-        /// <param name="reference">The reference</param>
-        /// <param name="description">The plan description</param>
-        /// <param name="amount">The plan amount, as an integer</param>
-        /// <returns>Response</returns>
-        public static Response CreatePlan(string name, string reference, string description, int amount)
-        {
-            var payload = new JsonObject();
-            payload.Add("name", name);
-            payload.Add("description", description);
-            payload.Add("reference", reference);
-            payload.Add("amount", amount);
-            payload.Add("test", Gateway.TestMode);
-
-            return Response.ParsePlan(Gateway.Post("plans.json", payload));
-        }
-
-        /// <summary>
-        /// Creates a new customer
-        /// </summary>
-        /// <param name="first_name">The customers first name</param>
-        /// <param name="last_name">The customers last name</param>
-        /// <param name="reference">Your reference (e.g. customer ID)</param>
-        /// <param name="email">The customers email address</param>
-        /// <param name="card_holder">The card holders name</param>
-        /// <param name="card_number">The customers credit card number</param>
-        /// <param name="cvv">The CVV for the card</param>
-        /// <param name="expiry_date">The expiry date for the card</param>
-        /// <returns>Response</returns>
-        public static Response CreateCustomer(string first_name, string last_name, string reference, string email, string card_holder, string card_number, string cvv, DateTime expiry_date)
-        {
-            var payload = new JsonObject();
-            payload.Add("first_name", first_name);
-            payload.Add("last_name", last_name);
-            payload.Add("reference", reference);
-            payload.Add("email", email);
-            var card = new JsonObject();
-            card.Add("card_number", card_number);
-            card.Add("card_holder", card_holder);
-            card.Add("cvv", cvv);
-            card.Add("expiry_date", expiry_date.ToString("MM/yyyy"));
-
-            payload.Add("card", card);
-
-            payload.Add("test", Gateway.TestMode);
-
-            return Response.ParseCustomer(Gateway.Post("customers.json", payload));
-        }
-
-        [Obsolete("This method has been replaced with Subscription.Create(...) and will be removed in future releases.")]
-        public static Response CreateSubscription(string customer_id, string plan_id, string frequency, string reference, DateTime start_date, bool is_active)
-        {
-
-            return Subscription.Create(customer_id, plan_id, frequency, reference, start_date, is_active);
-        }
-
-
-        /// <summary>
-        /// Ping the Fat Zebra gateway to ensure its 'awake'
+        /// Ping the Fat Zebra Gateway to ensure its 'awake'
         /// </summary>
         /// <returns>true or false - if an exception occurrs we just let it through</returns>
         public static bool Ping()
@@ -336,6 +188,54 @@ namespace FatZebra
         }
 
 
+        #region Obsoleted Methods
+
+        [Obsolete("This method has been replaced with Purchase.Create(...) and will be removed in future releases.")]
+        public static Response Purchase(int amount, string card_holder, string card_number, DateTime card_expiry, string cvv, string reference, string customer_ip)
+        {
+            return FatZebra.Purchase.Create(amount, card_holder, card_number, card_expiry, cvv, reference, customer_ip);
+        }
+
+        [Obsolete("This method has been replaced with Purchase.Create(...) and will be removed in future releases.")]
+        public static Response Purchase(int amount, string token, string cvv, string reference, string customer_ip)
+        {
+            return FatZebra.Purchase.Create(amount, token, cvv, reference, customer_ip);
+        }
+
+        [Obsolete("This method has been replaced with CreditCard.Create(...) and will be removed in future releases.")]
+        public static Response TokenizeCard(string card_holder, string number, DateTime expiry, string cvv)
+        {
+            return CreditCard.Create(card_holder, number, expiry, cvv);
+        }
+
+        [Obsolete("This method has been replaced with Refund.Create(...) and will be removed in future releases.")]
+        public static Response Refund(int amount, string originalTransactionNumber, string reference)
+        {
+            return FatZebra.Refund.Create(amount, originalTransactionNumber, reference);
+        }
+
+        [Obsolete("This method has been replaced with Plan.Create(...) and will be removed in future releases.")]
+        public static Response CreatePlan(string name, string reference, string description, int amount)
+        {
+            return Plan.Create(name, reference, description, amount);
+        }
+
+        [Obsolete("This method has been replaced with Customer.Create(...) and will be removed in future releases.")]
+        public static Response CreateCustomer(string first_name, string last_name, string reference, string email, string card_holder, string card_number, string cvv, DateTime expiry_date)
+        {
+            return Customer.Create(first_name, last_name, reference, email, card_holder, card_number, cvv, expiry_date);
+        }
+
+        [Obsolete("This method has been replaced with Subscription.Create(...) and will be removed in future releases.")]
+        public static Response CreateSubscription(string customer_id, string plan_id, string frequency, string reference, DateTime start_date, bool is_active)
+        {
+
+            return Subscription.Create(customer_id, plan_id, frequency, reference, start_date, is_active);
+        }
+
+#endregion
+
+        #region Private methods
         /// <summary>
         /// Formats the URI for the request
         /// </summary>
@@ -391,5 +291,6 @@ namespace FatZebra
 
             return JsonValue.Parse(jsonResponse);
         }
+        #endregion
     }
 }

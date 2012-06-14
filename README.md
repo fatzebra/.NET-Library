@@ -27,7 +27,7 @@ Gateway.TestMode = true;
 
 ```c#
 // Create a purchase
-var response = Gateway.Purchase(120, "M Smith", "5123456789012346", DateTime(2012, 05, 31), "123", invoice.record_number, Request.UserHostAddress);
+var response = Purchase.Create(120, "M Smith", "5123456789012346", DateTime(2012, 05, 31), "123", invoice.record_number, Request.UserHostAddress);
 
 if (response.Successful && response.Result.Successful) 
 {

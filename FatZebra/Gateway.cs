@@ -86,18 +86,11 @@ namespace FatZebra
         }
 
         /// <summary>
-        /// Instantiates a new instance of the Gateway
+        /// POST data to the Gateway
         /// </summary>
-        /// <param name="username">The API Username</param>
-        /// <param name="token">The API Token</param>
-        //public static Gateway()
-        //{
-        //    Gateway.Username = username;
-        //    Gateway.Token = token;
-        //    Gateway.SandboxMode = false;
-        //    Gateway.TestMode = false;
-        //}
-
+        /// <param name="uri">The URI</param>
+        /// <param name="payload">JSON Payload to be posted</param>
+        /// <returns>JSON Value response</returns>
         public static JsonValue Post(string uri, JsonObject payload)
         {
             var client = GetClient(uri);
@@ -124,10 +117,61 @@ namespace FatZebra
             }
         }
 
-        //public static JsonValue Get(string uri)
-        //{
-        //    return new JsonValue();
-        //}
+
+        /// <summary>
+        /// Perform a GET request against the Gateway
+        /// </summary>
+        /// <param name="uri">The URI to request</param>
+        /// <returns>JSON Response</returns>
+        public static JsonValue Get(string uri)
+        {
+            var client = GetClient(uri);
+            try
+            {
+                var result = (HttpWebResponse)client.GetResponse();
+                var sr = new StreamReader(result.GetResponseStream());
+                var jsonResponse = sr.ReadToEnd();
+                sr.Close();
+
+                return JsonValue.Parse(jsonResponse);
+            }
+            catch (WebException e)
+            {
+                return Gateway.HandleException(e);
+            }
+        }
+
+        /// <summary>
+        /// PUT data to the Gateway
+        /// </summary>
+        /// <param name="uri">The URI for the request</param>
+        /// <param name="payload">The JSON payload</param>
+        /// <returns>JSON response</returns>
+        public static JsonValue Put(string uri, JsonObject payload)
+        {
+            var client = GetClient(uri);
+            client.Method = "PUT";
+
+            var reqStream = client.GetRequestStream();
+            StreamWriter sw = new StreamWriter(reqStream);
+
+            sw.Write(payload.ToString());
+            sw.Close();
+
+            try
+            {
+                var result = (HttpWebResponse)client.GetResponse();
+                var sr = new StreamReader(result.GetResponseStream());
+                var jsonResponse = sr.ReadToEnd();
+                sr.Close();
+
+                return JsonValue.Parse(jsonResponse);
+            }
+            catch (WebException ex)
+            {
+                return Gateway.HandleException(ex);
+            }
+        }
 
         /// <summary>
         /// Purchase with card data
@@ -269,20 +313,11 @@ namespace FatZebra
             return Response.ParseCustomer(Gateway.Post("customers.json", payload));
         }
 
-
+        [Obsolete("This method has been replaced with Subscription.Create(...) and will be removed in future releases."]
         public static Response CreateSubscription(string customer_id, string plan_id, string frequency, string reference, DateTime start_date, bool is_active)
         {
-            
-            var payload = new JsonObject();
-            payload.Add("customer", customer_id);
-            payload.Add("plan", plan_id);
-            payload.Add("reference", reference);
-            payload.Add("is_active", is_active);
-            payload.Add("start_date", start_date.ToString("yyyy-MM-dd"));
-            payload.Add("frequency", frequency);
-            payload.Add("test", Gateway.TestMode);
 
-            return Response.ParseSubscription(Gateway.Post("subscriptions.json", payload));
+            return Subscription.Create(customer_id, plan_id, frequency, reference, start_date, is_active);
         }
 
 

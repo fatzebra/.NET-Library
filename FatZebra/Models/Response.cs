@@ -76,7 +76,7 @@ namespace FatZebra
         /// </summary>
         /// <param name="response">The JSON input from the API calls</param>
         /// <returns>Response</returns>
-        private static Response ParseBase(JsonValue response)
+        public static Response ParseBase(JsonValue response)
         {
             var obj = new Response();
             obj.test = response["test"].ReadAs<bool>(false);

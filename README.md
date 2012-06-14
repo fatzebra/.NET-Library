@@ -16,20 +16,18 @@ Currently there is support for:
 ## Basic Usage
 
 1. Add a reference to the library.
-2. Create a new instance of the Gateway
+2. Configure the Gateway:
+```c#
+Gateway.Username = "TEST";
+Gateway.Token = "TEST";
+Gateway.SandboxMode = true;
+Gateway.TestMode = true;
+```
 3. Purchase, Refund, Tokenize etc
 
 ```c#
-var gw = new FatZebra.Gateway("username", "token");
-
-// if you are using the sandbox, set sandbox = true
-gw.SandboxMode = true;
-
-// if you are using test mode in the live env, set live = true
-gw.TestMode = true;
-
-// Finally, create a purchase
-var response = gw.Purchase(120, "M Smith", "5123456789012346", DateTime(2012, 05, 31), "123", invoice.record_number, Request.UserHostAddress);
+// Create a purchase
+var response = Gateway.Purchase(120, "M Smith", "5123456789012346", DateTime(2012, 05, 31), "123", invoice.record_number, Request.UserHostAddress);
 
 if (response.Successful && response.Result.Successful) 
 {

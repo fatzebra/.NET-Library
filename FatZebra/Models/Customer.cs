@@ -88,18 +88,47 @@ namespace FatZebra
             return customer;
         }
 
-        public bool Save()
+        /// <summary>
+        /// Find a customer
+        /// </summary>
+        /// <param name="ID">The customer ID</param>
+        /// <returns>Customer</returns>
+        public static Customer Find(string ID)
         {
-            if (newRecord)
+            var response = Gateway.Get(String.Format("customers/{0}.json", ID));
+            var respBase = Response.ParseBase(response);
+
+            if (respBase.Successful)
             {
-                // Create new record
+                return Customer.Parse(response["response"]);
             }
             else
             {
-                // Update existing record
+                throw new Exception(String.Format("Error retrieving subscription: {0}", respBase.Errors));
             }
+        }
 
-            return true;
+        /// <summary>
+        /// Updates the customers credit card
+        /// </summary>
+        /// <param name="card_holder">The card holders name</param>
+        /// <param name="card_number">The card number</param>
+        /// <param name="card_expiry">The card expiry</param>
+        /// <param name="cvv">The CVV</param>
+        /// <returns>Indication of success</returns>
+        public bool UpdateCard(string card_holder, string card_number, DateTime card_expiry, string cvv)
+        {
+            var payload = new JsonObject();
+            var card = new JsonObject();
+            card.Add("card_holder", card_holder);
+            card.Add("card_number", card_number);
+            card.Add("expiry_date", card_expiry.ToString("MM/yyyy"));
+            card.Add("cvv", cvv);
+            payload.Add("card", card);
+
+            var response = Gateway.Put(String.Format("customers/{0}.json", this.ID), payload);
+
+            return response["successful"].ReadAs<bool>();
         }
     }
 }

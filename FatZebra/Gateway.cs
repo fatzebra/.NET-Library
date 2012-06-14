@@ -313,7 +313,7 @@ namespace FatZebra
             return Response.ParseCustomer(Gateway.Post("customers.json", payload));
         }
 
-        [Obsolete("This method has been replaced with Subscription.Create(...) and will be removed in future releases."]
+        [Obsolete("This method has been replaced with Subscription.Create(...) and will be removed in future releases.")]
         public static Response CreateSubscription(string customer_id, string plan_id, string frequency, string reference, DateTime start_date, bool is_active)
         {
 

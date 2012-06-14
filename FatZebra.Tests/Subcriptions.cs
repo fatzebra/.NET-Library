@@ -63,5 +63,23 @@ namespace FatZebra.Tests
             sub.Resume();
             Assert.IsTrue(sub.IsActive);
         }
+
+        [TestMethod]
+        public void ShouldFindASubscription()
+        {
+            var plan_id = Guid.NewGuid().ToString();
+            var plan = Gateway.CreatePlan("testplan1", plan_id, "This is a test plan", 100);
+
+            var customer_id = Guid.NewGuid().ToString();
+            var customer = Gateway.CreateCustomer("Jim", "Smith", customer_id, "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
+
+            var sub_id = Guid.NewGuid().ToString();
+            var subscription = Gateway.CreateSubscription(customer_id, plan_id, "Weekly", sub_id, DateTime.Now.AddDays(1), true);
+
+            var sub = ((Subscription)subscription.Result);
+
+            var sub2 = Subscription.Find(sub.ID);
+            Assert.AreEqual(sub2.ID, sub.ID);
+        }
     }
 }

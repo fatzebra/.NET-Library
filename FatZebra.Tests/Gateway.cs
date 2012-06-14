@@ -104,15 +104,5 @@ namespace FatZebra.Tests
             Assert.IsNotNull(plan.Result.ID);
             Assert.AreEqual(((Plan)plan.Result).Amount, 100);
         }
-
-        [TestMethod]
-        public void CustomerShouldBeSuccessful()
-        {
-            var customer = Gateway.CreateCustomer("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
-            Assert.IsTrue(customer.Successful);
-            Assert.IsNotNull(customer.Result.ID);
-
-            Assert.AreEqual("Jim Smith", ((Customer)customer.Result).CustomerName);
-        }
     }
 }

@@ -125,6 +125,26 @@ namespace FatZebra
         }
 
         /// <summary>
+        /// Find a customer
+        /// </summary>
+        /// <param name="ID">The customer ID</param>
+        /// <returns>Subscription</returns>
+        public static Subscription Find(string ID)
+        {
+            var response = Gateway.Get(String.Format("subscriptions/{0}.json", ID));
+            var respBase = Response.ParseBase(response);
+
+            if (respBase.Successful)
+            {
+                return Subscription.Parse(response["response"]);
+            }
+            else
+            {
+                throw new Exception(String.Format("Error retrieving subscription: {0}", respBase.Errors));
+            }
+        }
+
+        /// <summary>
         /// Create a new subscription
         /// </summary>
         /// <param name="customer_id">The Customer ID or Reference</param>

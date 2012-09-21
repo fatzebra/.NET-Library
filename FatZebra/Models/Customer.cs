@@ -8,8 +8,6 @@ namespace FatZebra
 {
     public class Customer : IRecord
     {
-        private bool newRecord = true;
-
         /// <summary>
         /// The customer ID
         /// </summary>

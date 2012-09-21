@@ -38,5 +38,40 @@ namespace FatZebra.Tests
 			Assert.IsFalse(response.Successful);
 			Assert.IsFalse(response.Result.Successful);
 		}
+
+		[Test]
+		public void TokenizedCardWithAlphaNumericsShouldNotBeSuccessful()
+		{
+			var response = CreditCard.Create("Mark Smith", "wqwssasasasasasqwq5123 sasasasawqwq4567 wqsasaswq8901 wsasasasqwq2346", DateTime.Now.AddYears(1), "123");
+			Assert.IsFalse(response.Successful);
+			Assert.IsFalse(response.Result.Successful);
+		}
+
+		[Test]
+		public void TokenizedCardWithSpacesShouldBeSuccessful()
+		{
+			var response = CreditCard.Create("Mark Smith", "5123 4567 8901 2346", DateTime.Now.AddYears(1), "123");
+
+			Assert.IsTrue(response.Successful);
+			Assert.IsTrue(response.Result.Successful);
+		}
+
+		[Test]
+		public void TokenizedCardWithHyphensShouldBeSuccessful()
+		{
+			var response = CreditCard.Create("Mark Smith", "5123-4567-8901-2346", DateTime.Now.AddYears(1), "123");
+			
+			Assert.IsTrue(response.Successful);
+			Assert.IsTrue(response.Result.Successful);
+		}
+
+		[Test]
+		public void TokenizedCardFailingLuhnShouldNotBeSuccessful()
+		{
+			var response = CreditCard.Create("Mark Smith", "5123456789012347", DateTime.Now.AddYears(1), "123");
+			
+			Assert.IsFalse(response.Successful);
+			Assert.IsFalse(response.Result.Successful);
+		}
     }
 }

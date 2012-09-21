@@ -17,7 +17,6 @@ namespace FatZebra
         private const string LIVE_GATEWAY_ADDRESS = "gateway.fatzebra.com.au";
         private const string SANDBOX_GATEWAY_ADDRESS = "gateway.sandbox.fatzebra.com.au";
 
-        private static string _gatewayAddress = LIVE_GATEWAY_ADDRESS;
         private static string _version = "1.0";
         public static bool VerifySSL = true;
 

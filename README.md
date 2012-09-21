@@ -1,4 +1,4 @@
-﻿# Fat Zebra .NET Library v1.0.0
+﻿# Fat Zebra .NET Library v2.0.2
 
 It's been a while since I've written in C#, so please excuse my code if it seems lacking in quality.
 
@@ -8,6 +8,8 @@ Currently there is support for:
 * Purchase with Token
 * Tokenize Card
 * Refund Purchase
+* Subscriptions
+* Customers
 
 ### Dependencies
 * System.Json

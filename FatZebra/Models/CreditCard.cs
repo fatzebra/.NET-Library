@@ -58,7 +58,7 @@ namespace FatZebra
         public static CreditCard Parse(JsonValue json)
         {
             var obj = new CreditCard();
-            if (json.ContainsKey("token"))
+            if (json.ContainsKey("token") && json["token"] != null)
             {
                 obj.ID = json["token"].ReadAs<string>();
                 obj.Successful = true;

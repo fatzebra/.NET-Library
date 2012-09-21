@@ -30,5 +30,13 @@ namespace FatZebra.Tests
 
             Assert.AreEqual(((CreditCard)response.Result).CardType, "VISA");
         }
+
+		[Test]
+		public void TokenizedCardWithInvalidNumberShouldNotBeSuccessful()
+		{
+			var response = CreditCard.Create ("Mark Smith", "49927398716", DateTime.Now.AddYears(1), "123");
+			Assert.IsFalse(response.Successful);
+			Assert.IsFalse(response.Result.Successful);
+		}
     }
 }

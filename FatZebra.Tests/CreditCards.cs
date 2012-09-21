@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using FatZebra;
 
 namespace FatZebra.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class CreditCardsTest
     {
 
-        [TestInitialize]
+        [TestFixtureSetUp]
         public void Init()
         {
             FatZebra.Gateway.Username = "TEST";
@@ -20,7 +19,7 @@ namespace FatZebra.Tests
             Gateway.TestMode = true;
         }
 
-        [TestMethod]
+        [Test]
         public void TokenizedCardShouldBeSuccessful()
         {
             var response = CreditCard.Create("M SMith", "4005550000000001", DateTime.Now.AddYears(1), "123");

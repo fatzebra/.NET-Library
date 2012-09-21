@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using FatZebra;
 
 namespace FatZebra.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class Subcriptions
     {
-        [TestInitialize]
+        [TestFixtureSetUp]
         public void Init()
         {
 
@@ -19,7 +19,7 @@ namespace FatZebra.Tests
             Gateway.TestMode = true;
         }
 
-        [TestMethod]
+        [Test]
         public void SubscriptionShouldBeSuccessful()
         {
             var plan_id = Guid.NewGuid().ToString();
@@ -36,7 +36,7 @@ namespace FatZebra.Tests
             Assert.AreEqual(sub_id, ((Subscription)subscription.Result).Reference);
         }
 
-        [TestMethod]
+        [Test]
         public void TestSubscriptionFetchAllRecords()
         {
             var list = Subscription.All();
@@ -44,7 +44,7 @@ namespace FatZebra.Tests
             Assert.AreNotEqual(list.Count, 0);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldCancelAndResumeASubscription()
         {
             var plan_id = Guid.NewGuid().ToString();
@@ -64,17 +64,17 @@ namespace FatZebra.Tests
             Assert.IsTrue(sub.IsActive);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldFindASubscription()
         {
             var plan_id = Guid.NewGuid().ToString();
-            var plan = Gateway.CreatePlan("testplan1", plan_id, "This is a test plan", 100);
+            Plan.Create("testplan1", plan_id, "This is a test plan", 100);
 
             var customer_id = Guid.NewGuid().ToString();
-            var customer = Gateway.CreateCustomer("Jim", "Smith", customer_id, "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
+            Customer.Create("Jim", "Smith", customer_id, "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
 
             var sub_id = Guid.NewGuid().ToString();
-            var subscription = Gateway.CreateSubscription(customer_id, plan_id, "Weekly", sub_id, DateTime.Now.AddDays(1), true);
+            var subscription = Subscription.Create(customer_id, plan_id, "Weekly", sub_id, DateTime.Now.AddDays(1), true);
 
             var sub = ((Subscription)subscription.Result);
 

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FatZebra", "FatZebra\FatZebra.csproj", "{D163D20E-C258-4CC3-9DFC-0F933B1E9F1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FatZebra.Tests", "FatZebra.Tests\FatZebra.Tests.csproj", "{142B86E4-307A-4E22-82EA-4EAAFE591FAA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{93EA9538-89A5-4814-B80C-CD78D203E332}"
 	ProjectSection(SolutionItems) = preProject
 		FatZebra Library.vsmdi = FatZebra Library.vsmdi
@@ -13,10 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FatZebra.Tests", "FatZebra.Tests\FatZebra.Tests.csproj", "{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}"
+EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = FatZebra Library.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -26,6 +23,18 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Debug|x86.Build.0 = Debug|Any CPU
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Release|x86.ActiveCfg = Release|Any CPU
+		{AB1B7BA4-7D41-4DB0-9AE7-075409A6BBBA}.Release|x86.Build.0 = Release|Any CPU
 		{D163D20E-C258-4CC3-9DFC-0F933B1E9F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D163D20E-C258-4CC3-9DFC-0F933B1E9F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D163D20E-C258-4CC3-9DFC-0F933B1E9F1C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -36,16 +45,14 @@ Global
 		{D163D20E-C258-4CC3-9DFC-0F933B1E9F1C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D163D20E-C258-4CC3-9DFC-0F933B1E9F1C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D163D20E-C258-4CC3-9DFC-0F933B1E9F1C}.Release|x86.ActiveCfg = Release|Any CPU
-		{142B86E4-307A-4E22-82EA-4EAAFE591FAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{142B86E4-307A-4E22-82EA-4EAAFE591FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{142B86E4-307A-4E22-82EA-4EAAFE591FAA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{142B86E4-307A-4E22-82EA-4EAAFE591FAA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{142B86E4-307A-4E22-82EA-4EAAFE591FAA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{142B86E4-307A-4E22-82EA-4EAAFE591FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{142B86E4-307A-4E22-82EA-4EAAFE591FAA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{142B86E4-307A-4E22-82EA-4EAAFE591FAA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{142B86E4-307A-4E22-82EA-4EAAFE591FAA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{142B86E4-307A-4E22-82EA-4EAAFE591FAA}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = FatZebra\FatZebra.csproj
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = FatZebra Library.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

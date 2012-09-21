@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using FatZebra;
 
 namespace FatZebra.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class Customers
     {
-        [TestInitialize]
+        [TestFixtureSetUp]
         public void Init()
         {
             FatZebra.Gateway.Username = "TEST";
@@ -18,7 +18,7 @@ namespace FatZebra.Tests
             Gateway.TestMode = true;
         }
 
-        [TestMethod]
+        [Test]
         public void CustomerShouldBeSuccessful()
         {
             var customer = Customer.Create("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
@@ -28,7 +28,7 @@ namespace FatZebra.Tests
             Assert.AreEqual("Jim Smith", ((Customer)customer.Result).CustomerName);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldFindACustomer()
         {
             var customer = Customer.Create("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
@@ -39,7 +39,7 @@ namespace FatZebra.Tests
             Assert.AreEqual(cust1.CustomerName, cust2.CustomerName);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldUpdateACustomersCard()
         {
             var customer = Customer.Create("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));

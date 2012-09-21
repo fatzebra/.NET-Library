@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using FatZebra;
 
 namespace FatZebra.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class Plans
     {
-        [TestInitialize]
+        [TestFixtureSetUp]
         public void Init()
         {
             FatZebra.Gateway.Username = "TEST";
@@ -18,7 +18,7 @@ namespace FatZebra.Tests
             Gateway.TestMode = true;
         }
 
-        [TestMethod]
+        [Test]
         public void PlansShouldBeSuccessful()
         {
             var plan_id = Guid.NewGuid().ToString();
@@ -28,7 +28,7 @@ namespace FatZebra.Tests
             Assert.AreEqual(((Plan)plan.Result).Amount, 100);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldFindAPlan()
         {
             var plan_id = Guid.NewGuid().ToString();

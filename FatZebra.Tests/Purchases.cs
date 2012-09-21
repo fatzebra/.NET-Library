@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using FatZebra;
 
 namespace FatZebra.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class Purchases
     {
-        [TestInitialize]
+        [TestFixtureSetUp]
         public void Init()
         {
             FatZebra.Gateway.Username = "TEST";
@@ -18,7 +18,7 @@ namespace FatZebra.Tests
             Gateway.TestMode = true;
         }
 
-        [TestMethod]
+        [Test]
         public void PurchaseShouldBeSuccessful()
         {
             var response = Purchase.Create(120, "M Smith", "5123456789012346", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1");
@@ -33,7 +33,7 @@ namespace FatZebra.Tests
             Assert.AreEqual(((Purchase)response.Result).CardType, "MasterCard");
         }
 
-        [TestMethod]
+        [Test]
         public void PurchaseShouldReturnErrors()
         {
             var response = Purchase.Create(120, "M Smith", "", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1");
@@ -43,7 +43,7 @@ namespace FatZebra.Tests
             Assert.AreEqual(response.Errors.Count, 1);
         }
 
-        [TestMethod]
+        [Test]
         public void PurchaseWithTokenShouldBeSuccessful()
         {
             var card = CreditCard.Create("M SMith", "5123456789012346", DateTime.Now.AddYears(1), "123");

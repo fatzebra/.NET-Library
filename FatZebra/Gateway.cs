@@ -95,14 +95,14 @@ namespace FatZebra
             var client = GetClient(uri);
             client.Method = "POST";
 
-            var reqStream = client.GetRequestStream();
-            StreamWriter sw = new StreamWriter(reqStream);
+			try
+			{
+            	var reqStream = client.GetRequestStream();
+            	StreamWriter sw = new StreamWriter(reqStream);
 
-            sw.Write(payload.ToString());
-            sw.Close();
+            	sw.Write(payload.ToString());
+            	sw.Close();
 
-            try
-            {
                 var result = (HttpWebResponse)client.GetResponse();
                 var sr = new StreamReader(result.GetResponseStream());
                 var jsonResponse = sr.ReadToEnd();
@@ -265,10 +265,15 @@ namespace FatZebra
         /// </summary>
         /// <param name="ex">The exception</param>
         /// <returns>JsonValue or raises exception</returns>
-        private static JsonValue HandleException(WebException ex)
-        {
-            var response = (HttpWebResponse)ex.Response;
-            HttpStatusCode code = response.StatusCode;
+        private static JsonValue HandleException (WebException ex)
+		{
+			var response = (HttpWebResponse)ex.Response;
+            
+			if (response == null && ex.Status == WebExceptionStatus.ConnectFailure) {
+				throw new Exception("Error connecting to gateway. Please verify you are able to communicate with the gateway address over HTTPS.", ex);
+			}
+
+			HttpStatusCode code = response.StatusCode;
 
             // If error is 401 then its exception
             // If its 404 or otherwise we can continue to return the response

@@ -76,26 +76,34 @@ namespace FatZebra
         /// </summary>
         /// <param name="response">The JSON input from the API calls</param>
         /// <returns>Response</returns>
-        public static Response ParseBase(JsonValue response)
-        {
-            var obj = new Response();
-            obj.test = response["test"].ReadAs<bool>(false);
-            obj.successful = response["successful"].ReadAs<bool>(false);
+        public static Response ParseBase (JsonValue response)
+		{
+			var obj = new Response ();
+			try {
+				obj.test = response ["test"].ReadAs<bool> (false);
+				obj.successful = response ["successful"].ReadAs<bool> (false);
 
-            // Optionals
-            if (response.ContainsKey("total_pages"))
-                obj.total_pages = response["total_pages"].ReadAs<int>(0);
-            if (response.ContainsKey("page"))
-                obj.page = response["page"].ReadAs<int>(0);
-            if (response.ContainsKey("total_records"))
-                obj.total_records = response["total_records"].ReadAs<int>(0);
-            if (response.ContainsKey("records"))
-                obj.records = response["records"].ReadAs<int>(0);
+				// Optionals
+				if (response.ContainsKey ("total_pages"))
+					obj.total_pages = response ["total_pages"].ReadAs<int> (0);
+				if (response.ContainsKey ("page"))
+					obj.page = response ["page"].ReadAs<int> (0);
+				if (response.ContainsKey ("total_records"))
+					obj.total_records = response ["total_records"].ReadAs<int> (0);
+				if (response.ContainsKey ("records"))
+					obj.records = response ["records"].ReadAs<int> (0);
 
-            foreach (var error in (JsonArray)response["errors"])
-            {
-                obj.errors.Add(error.ReadAs<string>());
-            }
+				foreach (var error in (JsonArray)response["errors"]) {
+					obj.errors.Add (error.ReadAs<string> ());
+				}
+			} catch (Exception ex) {
+				System.Diagnostics.Debugger.Log(1, "Parse", 
+				                                String.Format("Exception caught attempting to parse response. {0}. Response content: {1}", 
+				              ex.Message, 
+				              response.ToString()));
+
+				throw;
+			}
 
             return obj;
         }

@@ -55,19 +55,23 @@ namespace FatZebra
         /// </summary>
         /// <param name="json">Input from API calls</param>
         /// <returns>CreditCard</returns>
-        public static CreditCard Parse(JsonValue json)
-        {
+        public static CreditCard Parse (JsonValue json)
+		{
+			if (json == null) {
+				return new CreditCard ();
+			}
+
             var obj = new CreditCard();
             if (json.ContainsKey("token") && json["token"] != null)
             {
                 obj.ID = json["token"].ReadAs<string>();
                 obj.Successful = true;
             }
-            if (json.ContainsKey("card_holder"))
+            if (json.ContainsKey("card_holder") && json["card_holder"] != null)
                 obj.CardHolder = json["card_holder"].ReadAs<string>();
-            if (json.ContainsKey("card_number"))
+            if (json.ContainsKey("card_number") && json["card_number"] != null)
                 obj.CardNumber = json["card_number"].ReadAs<string>();
-            if (json.ContainsKey("card_expiry"))
+            if (json.ContainsKey("card_expiry") && json["card_expiry"] != null)
                 obj.ExpiryDate = json["card_expiry"].ReadAs<string>();
 
             return obj;
@@ -92,5 +96,24 @@ namespace FatZebra
 
             return Response.ParseTokenized(Gateway.Post("credit_cards.json", payload));
         }
+
+		/// <summary>
+		/// Fetches a Tokenized Credit Card from the database
+		/// If the card cannot be found Null is return.
+		/// </summary>
+		/// <param name='identifier'>
+		/// The card token
+		/// </param>
+		public static CreditCard Find (string identifier)
+		{
+			var response = Response.ParseTokenized (Gateway.Get(String.Format("credit_cards/{0}.json", identifier)));
+			var card = (CreditCard)response.Result;
+
+			if (response.Successful && card.CardType != "Unknown") {
+				return card;
+			} else {
+				return null;
+			}
+		}
     }
 }

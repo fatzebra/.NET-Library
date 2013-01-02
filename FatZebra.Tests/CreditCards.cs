@@ -73,5 +73,22 @@ namespace FatZebra.Tests
 			Assert.IsFalse(response.Successful);
 			Assert.IsFalse(response.Result.Successful);
 		}
+
+		[Test]
+		public void FetchingCreditCardShouldBeSuccessful() 
+		{
+			var created_card = CreditCard.Create("Mark Smith", "5123-4567-8901-2346", DateTime.Now.AddYears(1), "123");
+			var fetched = CreditCard.Find(created_card.Result.ID);
+
+			Assert.IsNotNull(fetched);
+		}
+
+		[Test]
+		public void FetchNonExistantCreditCardShouldBeNull()
+		{
+			var fetched = CreditCard.Find(Guid.NewGuid().ToString());
+
+			Assert.IsNull(fetched);
+		}
     }
 }

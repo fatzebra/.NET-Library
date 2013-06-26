@@ -39,8 +39,8 @@ namespace FatZebra.Tests
             var response = Purchase.Create(120, "M Smith", "", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1");
             Assert.IsFalse(response.Successful);
             Assert.IsFalse(response.Result.Successful);
-            Assert.IsNotNull(response.Result.ID);
-            Assert.AreEqual(response.Errors.Count, 1);
+            Assert.IsNull(response.Result.ID);
+            Assert.GreaterOrEqual(response.Errors.Count, 1);
         }
 
         [Test]

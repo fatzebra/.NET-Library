@@ -18,6 +18,8 @@ namespace FatZebra
         private const string SANDBOX_GATEWAY_ADDRESS = "gateway.sandbox.fatzebra.com.au";
 
         private static string _version = "1.0";
+		private static string _gwAddress = Gateway.LIVE_GATEWAY_ADDRESS;
+		private static bool _sandbox = false;
         public static bool VerifySSL = true;
 
         /// <summary>
@@ -28,7 +30,21 @@ namespace FatZebra
         /// <summary>
         /// Enabled or Disabled Sandbox Mode
         /// </summary>
-        public static bool SandboxMode { get; set; }
+        public static bool SandboxMode { 
+			get {
+				return _sandbox;
+			}
+
+			set {
+				_sandbox = value;
+				if (value) {
+					_gwAddress = Gateway.SANDBOX_GATEWAY_ADDRESS;
+				} else {
+					_gwAddress = Gateway.LIVE_GATEWAY_ADDRESS;
+				}
+			}
+		
+		}
 
         /// <summary>
         /// The API Username
@@ -46,19 +62,14 @@ namespace FatZebra
         /// <summary>
         /// The API Address
         /// </summary>
-        public static string GatewayAddress
-        {
-            get
-            {
-                if (Gateway.SandboxMode)
-                {
-                    return SANDBOX_GATEWAY_ADDRESS;
-                }
-                else
-                {
-                    return LIVE_GATEWAY_ADDRESS;
-                }
-            }
+        public static string GatewayAddress {
+			get {
+				return _gwAddress;
+			}
+
+			set {
+				_gwAddress = value;
+			}
         }
 
         /// <summary>
@@ -267,6 +278,10 @@ namespace FatZebra
         /// <returns>JsonValue or raises exception</returns>
         private static JsonValue HandleException (WebException ex)
 		{
+			if (ex.Response == null) {
+				throw new Exception(String.Format("Error connecting to Gateway: {0}", ex.Status), ex);
+			}
+
 			var response = (HttpWebResponse)ex.Response;
             
 			if (response == null && ex.Status == WebExceptionStatus.ConnectFailure) {

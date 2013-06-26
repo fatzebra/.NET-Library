@@ -1,4 +1,4 @@
-﻿# Fat Zebra .NET Library v2.0.4
+﻿# Fat Zebra .NET Library v2.0.5
 
 It's been a while since I've written in C#, so please excuse my code if it seems lacking in quality.
 

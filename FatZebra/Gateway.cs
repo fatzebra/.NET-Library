@@ -21,6 +21,7 @@ namespace FatZebra
 		private static string _gwAddress = Gateway.LIVE_GATEWAY_ADDRESS;
 		private static bool _sandbox = false;
         public static bool VerifySSL = true;
+		public static bool VersionPrefix = true;
 
         /// <summary>
         /// Enables or Disabled Test Mode
@@ -94,6 +95,11 @@ namespace FatZebra
                 throw new Exception("Please set the protocol via VerifySSL");
             }
         }
+
+		public static IWebProxy Proxy 
+		{
+			get; set;
+		}
 
         /// <summary>
         /// POST data to the Gateway
@@ -251,9 +257,13 @@ namespace FatZebra
         /// </summary>
         /// <param name="endpoint">The endpoint of the request.</param>
         /// <returns>URI string</returns>
-        private static string GetURI(string endpoint)
-        {
-            return String.Format("{0}://{1}/v{2}/{3}", Gateway.Protocol, Gateway.GatewayAddress, Gateway.Version, endpoint);
+        private static string GetURI (string endpoint)
+		{
+			if (VersionPrefix) {
+				return String.Format ("{0}://{1}/v{2}/{3}", Gateway.Protocol, Gateway.GatewayAddress, Gateway.Version, endpoint);
+			} else {
+				return String.Format ("{0}://{1}/{2}", Gateway.Protocol, Gateway.GatewayAddress, endpoint);
+			}
         }
 
         /// <summary>
@@ -261,12 +271,16 @@ namespace FatZebra
         /// </summary>
         /// <param name="endpoint">The end point of the request.</param>
         /// <returns>HttpWebRequest</returns>
-        private static HttpWebRequest GetClient(string endpoint)
-        {
-            var client = (HttpWebRequest)System.Net.WebRequest.Create(Gateway.GetURI(endpoint));
-            client.Credentials = new System.Net.NetworkCredential(Gateway.Username, Gateway.Token);
-            client.UserAgent = String.Format("Official .NET {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            client.PreAuthenticate = true;
+        private static HttpWebRequest GetClient (string endpoint)
+		{
+			var client = (HttpWebRequest)System.Net.WebRequest.Create (Gateway.GetURI (endpoint));
+			client.Credentials = new System.Net.NetworkCredential (Gateway.Username, Gateway.Token);
+			client.UserAgent = String.Format ("Official .NET {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+			client.PreAuthenticate = true;
+			client.ContentType = "application/json";
+			if (Gateway.Proxy != null) {
+				client.Proxy = Gateway.Proxy;
+			}
 
             return client;
         }

@@ -189,6 +189,26 @@ namespace FatZebra
             }
         }
 
+		/// <summary>
+		/// Sends a DELETE request to the gateway
+		/// </summary>
+		/// <param name="uri">The URI for the request</param>
+		/// <returns>Indication of success</returns>
+		public static bool Delete (string uri)
+		{
+			bool success = false;
+			var client = GetClient (uri);
+			client.Method = "DELETE";
+
+			try {
+				var response = (HttpWebResponse)client.GetResponse ();
+				success = response.StatusCode == HttpStatusCode.OK;
+				return success;
+			} catch (WebException) {
+				return false;
+			}
+		}
+
         /// <summary>
         /// Ping the Fat Zebra Gateway to ensure its 'awake'
         /// </summary>

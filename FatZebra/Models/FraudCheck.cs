@@ -39,7 +39,7 @@ namespace FatZebra
 			this.OrderItems = new List<OrderItem> ();
 			this.Recipients = new List<Recipient> ();
 			this.ShippingAddress = new ShippingAddress ();
-			this.Customer = new Customer ();
+			this.Customer = new OrderCustomer ();
 		}
 	}
 }

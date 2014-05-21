@@ -5,9 +5,9 @@ using System.Text;
 using System.Web;
 using System.Net;
 using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Json;
 using System.Reflection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 
 namespace FatZebra
@@ -101,37 +101,35 @@ namespace FatZebra
 			get; set;
 		}
 
-        /// <summary>
-        /// POST data to the Gateway
-        /// </summary>
-        /// <param name="uri">The URI</param>
-        /// <param name="payload">JSON Payload to be posted</param>
-        /// <returns>JSON Value response</returns>
-        public static JsonValue Post(string uri, JsonObject payload)
-        {
-            var client = GetClient(uri);
-            client.Method = "POST";
+		/// <summary>
+		/// POST data to the Gateway
+		/// </summary>
+		/// <param name="uri">The URI</param>
+		/// <param name="payload">JSON Payload (IRequest) to be posted</param>
+		/// <returns>JSON Value response</returns>
+		public static Response<T> Post<T>(string uri, IRequest payload)
+		{
+			var client = GetClient(uri);
+			client.Method = "POST";
 
 			try
 			{
-            	var reqStream = client.GetRequestStream();
-            	StreamWriter sw = new StreamWriter(reqStream);
+				var reqStream = client.GetRequestStream();
+				StreamWriter sw = new StreamWriter(reqStream);
+				sw.Write(JsonConvert.SerializeObject (payload, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+				sw.Close();
 
-            	sw.Write(payload.ToString());
-            	sw.Close();
-
-                var result = (HttpWebResponse)client.GetResponse();
-                var sr = new StreamReader(result.GetResponseStream());
-                var jsonResponse = sr.ReadToEnd();
-                sr.Close();
-
-                return JsonValue.Parse(jsonResponse);
-            }
-            catch (WebException ex)
-            {
-                return Gateway.HandleException(ex);
-            }
-        }
+				var result = (HttpWebResponse)client.GetResponse();
+				var sr = new StreamReader(result.GetResponseStream());
+				Response<T> response = JsonConvert.DeserializeObject<Response<T>>(sr.ReadToEnd());
+				sr.Close();
+				return response;
+			}
+			catch (WebException ex)
+			{
+				return Gateway.HandleException<T>(ex);
+			}
+		}
 
 
         /// <summary>
@@ -139,55 +137,55 @@ namespace FatZebra
         /// </summary>
         /// <param name="uri">The URI to request</param>
         /// <returns>JSON Response</returns>
-        public static JsonValue Get(string uri)
-        {
-            var client = GetClient(uri);
-            try
-            {
-                var result = (HttpWebResponse)client.GetResponse();
-                var sr = new StreamReader(result.GetResponseStream());
-                var jsonResponse = sr.ReadToEnd();
-                sr.Close();
+		public static Response<T> Get<T>(string uri) 
+		{
+			var client = GetClient (uri);
+			try 
+			{
+				var result = (HttpWebResponse)client.GetResponse();
+				var sr = new StreamReader(result.GetResponseStream());
+				Response<T> response = JsonConvert.DeserializeObject<Response<T>>(sr.ReadToEnd());
+				sr.Close();
 
-                return JsonValue.Parse(jsonResponse);
-            }
-            catch (WebException e)
-            {
-                return Gateway.HandleException(e);
-            }
-        }
+				return response;
+			}
+			catch(WebException e) 
+			{
+				return Gateway.HandleException<T>(e);
+			}
+		}
 
-        /// <summary>
-        /// PUT data to the Gateway
-        /// </summary>
-        /// <param name="uri">The URI for the request</param>
-        /// <param name="payload">The JSON payload</param>
-        /// <returns>JSON response</returns>
-        public static JsonValue Put(string uri, JsonObject payload)
-        {
-            var client = GetClient(uri);
-            client.Method = "PUT";
+		/// <summary>
+		/// PUT data to the Gateway
+		/// </summary>
+		/// <param name="uri">The URI for the request</param>
+		/// <param name="payload">The JSON payload (IRequest)</param>
+		/// <returns>JSON response</returns>
+		public static Response<T> Put<T>(string uri, IRequest payload)
+		{
+			var client = GetClient(uri);
+			client.Method = "PUT";
 
-            var reqStream = client.GetRequestStream();
-            StreamWriter sw = new StreamWriter(reqStream);
+			var reqStream = client.GetRequestStream();
+			StreamWriter sw = new StreamWriter(reqStream);
 
-            sw.Write(payload.ToString());
-            sw.Close();
+			sw.Write(JsonConvert.SerializeObject (payload, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+			sw.Close();
 
-            try
-            {
-                var result = (HttpWebResponse)client.GetResponse();
-                var sr = new StreamReader(result.GetResponseStream());
-                var jsonResponse = sr.ReadToEnd();
-                sr.Close();
+			try
+			{
+				var result = (HttpWebResponse)client.GetResponse();
+				var sr = new StreamReader(result.GetResponseStream());
+				Response<T> response = JsonConvert.DeserializeObject<Response<T>>(sr.ReadToEnd());
+				sr.Close();
 
-                return JsonValue.Parse(jsonResponse);
-            }
-            catch (WebException ex)
-            {
-                return Gateway.HandleException(ex);
-            }
-        }
+				return response;
+			}
+			catch (WebException ex)
+			{
+				return Gateway.HandleException<T>(ex);
+			}
+		}
 
 		/// <summary>
 		/// Sends a DELETE request to the gateway
@@ -227,43 +225,43 @@ namespace FatZebra
         #region Obsoleted Methods
 
         [Obsolete("This method has been replaced with Purchase.Create(...) and will be removed in future releases.")]
-        public static Response Purchase(int amount, string card_holder, string card_number, DateTime card_expiry, string cvv, string reference, string customer_ip)
+		public static Response<Purchase> Purchase(int amount, string card_holder, string card_number, DateTime card_expiry, string cvv, string reference, string customer_ip)
         {
             return FatZebra.Purchase.Create(amount, card_holder, card_number, card_expiry, cvv, reference, customer_ip);
         }
 
         [Obsolete("This method has been replaced with Purchase.Create(...) and will be removed in future releases.")]
-        public static Response Purchase(int amount, string token, string cvv, string reference, string customer_ip)
+		public static Response<Purchase> Purchase(int amount, string token, string cvv, string reference, string customer_ip)
         {
             return FatZebra.Purchase.Create(amount, token, cvv, reference, customer_ip);
         }
 
         [Obsolete("This method has been replaced with CreditCard.Create(...) and will be removed in future releases.")]
-        public static Response TokenizeCard(string card_holder, string number, DateTime expiry, string cvv)
+		public static Response<CreditCard> TokenizeCard(string card_holder, string number, DateTime expiry, string cvv)
         {
             return CreditCard.Create(card_holder, number, expiry, cvv);
         }
 
         [Obsolete("This method has been replaced with Refund.Create(...) and will be removed in future releases.")]
-        public static Response Refund(int amount, string originalTransactionNumber, string reference)
+		public static Response<Refund> Refund(int amount, string originalTransactionNumber, string reference)
         {
             return FatZebra.Refund.Create(amount, originalTransactionNumber, reference);
         }
 
         [Obsolete("This method has been replaced with Plan.Create(...) and will be removed in future releases.")]
-        public static Response CreatePlan(string name, string reference, string description, int amount)
+		public static Response<Plan> CreatePlan(string name, string reference, string description, int amount)
         {
             return Plan.Create(name, reference, description, amount);
         }
 
         [Obsolete("This method has been replaced with Customer.Create(...) and will be removed in future releases.")]
-        public static Response CreateCustomer(string first_name, string last_name, string reference, string email, string card_holder, string card_number, string cvv, DateTime expiry_date)
+		public static Response<Customer> CreateCustomer(string first_name, string last_name, string reference, string email, string card_holder, string card_number, string cvv, DateTime expiry_date)
         {
             return Customer.Create(first_name, last_name, reference, email, card_holder, card_number, cvv, expiry_date);
         }
 
         [Obsolete("This method has been replaced with Subscription.Create(...) and will be removed in future releases.")]
-        public static Response CreateSubscription(string customer_id, string plan_id, string frequency, string reference, DateTime start_date, bool is_active)
+		public static Response<Subscription> CreateSubscription(string customer_id, string plan_id, string frequency, string reference, DateTime start_date, bool is_active)
         {
 
             return Subscription.Create(customer_id, plan_id, frequency, reference, start_date, is_active);
@@ -298,6 +296,7 @@ namespace FatZebra
 			client.UserAgent = String.Format ("Official .NET {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
 			client.PreAuthenticate = true;
 			client.ContentType = "application/json";
+			client.Proxy = new WebProxy ("http://127.0.0.1:8888");
 			if (Gateway.Proxy != null) {
 				client.Proxy = Gateway.Proxy;
 			}
@@ -310,7 +309,7 @@ namespace FatZebra
         /// </summary>
         /// <param name="ex">The exception</param>
         /// <returns>JsonValue or raises exception</returns>
-        private static JsonValue HandleException (WebException ex)
+		private static Response<T> HandleException<T> (WebException ex)
 		{
 			if (ex.Response == null) {
 				throw new Exception(String.Format("Error connecting to Gateway: {0}", ex.Status), ex);
@@ -339,10 +338,10 @@ namespace FatZebra
             }
 
             var sr = new StreamReader(response.GetResponseStream());
-            var jsonResponse = sr.ReadToEnd();
+			var responseObject = JsonConvert.DeserializeObject<Response<T>>(sr.ReadToEnd());
             sr.Close();
 
-            return JsonValue.Parse(jsonResponse);
+			return responseObject;
         }
         #endregion
     }

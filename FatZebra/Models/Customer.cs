@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Json;
+using Newtonsoft.Json;
 
 namespace FatZebra
 {
@@ -11,31 +11,37 @@ namespace FatZebra
         /// <summary>
         /// The customer ID
         /// </summary>
-        public string ID { get; set; }
+		[JsonProperty("id")]
+		public string ID { get; set; }
 
         /// <summary>
         /// Indicates if the customer was created successfully
         /// </summary>
-        public bool Successful { get; set; }
+		[JsonProperty("successful")]
+		public bool Successful { get; set; }
 
         /// <summary>
         /// The customers email address
         /// </summary>
-        public string Email { get; set; }
+		[JsonProperty("email")]
+		public string Email { get; set; }
 
         /// <summary>
         /// The customers reference
         /// </summary>
-        public string Reference { get; set; }
+		[JsonProperty("reference")]
+		public string Reference { get; set; }
 
         /// <summary>
         /// The customers first name
         /// </summary>
-        public string FirstName { get; set; }
+		[JsonProperty("first_name")]
+		public string FirstName { get; set; }
 
         /// <summary>
         /// The customers last name
         /// </summary>
+		[JsonProperty("last_name")]
         public string LastName { get; set; }
 
         /// <summary>
@@ -52,39 +58,8 @@ namespace FatZebra
         /// <summary>
         /// The customers credit card token
         /// </summary>
-        public string CardToken { get; set; }
-
-        /// <summary>
-        /// Instantiates a new Customer
-        /// </summary>
-        /// <param name="json">Raw JSON data</param>
-        /// <returns>Customer</returns>
-        public static Customer Parse(JsonValue json)
-        {
-            var customer = new Customer();
-
-            if (json.ContainsKey("first_name") && json["first_name"] != null)
-                customer.FirstName = json["first_name"].ReadAs<string>();
-            
-            if (json.ContainsKey("last_name") && json["last_name"] != null)
-                customer.LastName = json["last_name"].ReadAs<string>();
-
-            if (json.ContainsKey("id") && json["id"] != null)
-                customer.ID = json["id"].ReadAs<string>();
-
-            customer.Successful = customer.ID != null;
-            
-            if (json.ContainsKey("email") && json["email"] != null)
-                customer.Email = json["email"].ReadAs<string>();
-
-            if (json.ContainsKey("reference") && json["reference"] != null)
-                customer.Reference = json["reference"].ReadAs<string>();
-
-            if (json.ContainsKey("card_token") && json["card_token"] != null)
-                customer.CardToken = json["card_token"].ReadAs<string>();
-
-            return customer;
-        }
+		[JsonProperty("card_token")]
+		public string CardToken { get; set; }
 
         /// <summary>
         /// Find a customer
@@ -93,16 +68,15 @@ namespace FatZebra
         /// <returns>Customer</returns>
         public static Customer Find(string ID)
         {
-            var response = Gateway.Get(String.Format("customers/{0}.json", ID));
-            var respBase = Response.ParseBase(response);
+			var response = Gateway.Get<Customer>(String.Format("customers/{0}.json", ID));
 
-            if (respBase.Successful)
+			if (response.Successful)
             {
-                return Customer.Parse(response["response"]);
+				return response.Result;
             }
             else
             {
-                throw new Exception(String.Format("Error retrieving subscription: {0}", respBase.Errors));
+				throw new Exception(String.Format("Error retrieving subscription: {0}", response.Errors));
             }
         }
 
@@ -118,24 +92,25 @@ namespace FatZebra
         /// <param name="cvv">The CVV</param>
         /// <param name="expiry_date">The card expiry date</param>
         /// <returns>Response</returns>
-        public static Response Create(string first_name, string last_name, string reference, string email, string card_holder, string card_number, string cvv, DateTime expiry_date)
+		public static Response<Customer> Create(string first_name, string last_name, string reference, string email, string card_holder, string card_number, string cvv, DateTime expiry_date)
         {
-            var payload = new JsonObject();
-            payload.Add("first_name", first_name);
-            payload.Add("last_name", last_name);
-            payload.Add("reference", reference);
-            payload.Add("email", email);
-            var card = new JsonObject();
-            card.Add("card_number", card_number);
-            card.Add("card_holder", card_holder);
-            card.Add("cvv", cvv);
-            card.Add("expiry_date", expiry_date.ToString("MM/yyyy"));
+			var req = new Requests.Customer {
+				FirstName = first_name,
+				LastName = last_name,
+				Email = email,
+				Reference = reference,
+				Card = new Requests.CreditCard {
+					CardHolder = card_holder,
+					CardNumber = card_number,
+					SecurityCode = cvv,
+					ExpiryDate = expiry_date
+				},
+				TestMode = Gateway.TestMode
+			};
 
-            payload.Add("card", card);
 
-            payload.Add("test", Gateway.TestMode);
 
-            return Response.ParseCustomer(Gateway.Post("customers.json", payload));
+			return Gateway.Post<Customer>("customers.json", req);
         }
 
         /// <summary>
@@ -148,17 +123,18 @@ namespace FatZebra
         /// <returns>Indication of success</returns>
         public bool UpdateCard(string card_holder, string card_number, DateTime card_expiry, string cvv)
         {
-            var payload = new JsonObject();
-            var card = new JsonObject();
-            card.Add("card_holder", card_holder);
-            card.Add("card_number", card_number);
-            card.Add("expiry_date", card_expiry.ToString("MM/yyyy"));
-            card.Add("cvv", cvv);
-            payload.Add("card", card);
+			var req = new Requests.Customer {
+				Card = new Requests.CreditCard {
+				CardHolder = card_holder,
+				CardNumber = card_number,
+				ExpiryDate = card_expiry,
+				SecurityCode = cvv
+				}
+			};
+				
+			var response = Gateway.Put<Customer>(String.Format("customers/{0}.json", this.ID), req);
 
-            var response = Gateway.Put(String.Format("customers/{0}.json", this.ID), payload);
-
-            return response["successful"].ReadAs<bool>();
+			return response.Successful;
         }
     }
 }

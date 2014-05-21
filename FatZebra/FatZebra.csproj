@@ -32,14 +32,14 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Json">
-      <HintPath>..\packages\System.Json.4.0.20126.16343\lib\net40\System.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gateway.cs" />
@@ -52,6 +52,23 @@
     <Compile Include="Models\Purchase.cs" />
     <Compile Include="Models\Refund.cs" />
     <Compile Include="Models\Response.cs" />
+    <Compile Include="Models\FraudCheck.cs" />
+    <Compile Include="Models\OrderItem.cs" />
+    <Compile Include="Models\ShippingAddress.cs" />
+    <Compile Include="Models\ShippingMethod.cs" />
+    <Compile Include="Models\OrderCustomer.cs" />
+    <Compile Include="Models\Recipient.cs" />
+    <Compile Include="Models\FraudResult.cs" />
+    <Compile Include="Models\Requests\Purchase.cs" />
+    <Compile Include="JsonConverters\ExpiryDateConverter.cs" />
+    <Compile Include="Models\Requests\IRequest.cs" />
+    <Compile Include="Models\Requests\CreditCard.cs" />
+    <Compile Include="Models\Requests\Customer.cs" />
+    <Compile Include="Models\Requests\Plan.cs" />
+    <Compile Include="Models\Requests\Refund.cs" />
+    <Compile Include="Models\Requests\Subscription.cs" />
+    <Compile Include="Models\Requests\CustomerAddress.cs" />
+    <Compile Include="Models\SubscriptionFrequency.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -67,4 +84,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="Models\Requests\" />
+    <Folder Include="JsonConverters\" />
+  </ItemGroup>
 </Project>

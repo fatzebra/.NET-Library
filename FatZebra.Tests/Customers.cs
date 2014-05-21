@@ -25,7 +25,7 @@ namespace FatZebra.Tests
             Assert.IsTrue(customer.Successful);
             Assert.IsNotNull(customer.Result.ID);
 
-            Assert.AreEqual("Jim Smith", ((Customer)customer.Result).CustomerName);
+			Assert.AreEqual("Jim Smith", customer.Result.CustomerName);
         }
 
         [Test]
@@ -43,9 +43,9 @@ namespace FatZebra.Tests
         public void ShouldUpdateACustomersCard()
         {
             var customer = Customer.Create("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
-            var cust = ((Customer)customer.Result);
+            var cust = customer.Result;
 
-            Assert.IsTrue(cust.UpdateCard("Wally Smith", "345678901234564", DateTime.Now.AddYears(1), "1234"));
+			Assert.IsTrue(cust.UpdateCard("Wally Smith", "4444333322221111", DateTime.Now.AddYears(1), "1234"));
         }
     }
 }

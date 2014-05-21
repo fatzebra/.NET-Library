@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using NUnit.Framework;
 using FatZebra;
+using Newtonsoft.Json;
 
 namespace FatZebra.Tests
 {

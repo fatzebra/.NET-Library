@@ -2,179 +2,73 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Json;
+using Newtonsoft.Json;
 
 namespace FatZebra
 {
-    public class Response
+	public class Response<T>
     {
-        internal bool successful = false;
+//        internal bool successful = false;
         internal IList<String> errors = new List<string>();
-        internal IRecord result = null;
-        internal bool test = false;
-        internal int records = 0;
-        internal int total_records = 0;
-        internal int page = 0;
-        internal int total_pages = 0;
+		internal IList<String> fraudCheckMessages = new List<string>();
+//		internal T result = default(T);
+//        internal bool test = false;
+//        internal int records = 0;
+//        internal int total_records = 0;
+//        internal int page = 0;
+//        internal int total_pages = 0;
+
+		// {"successful":true,"response":{"authorization":1400645846,"id":"071-P-KCE1UEL7","card_number":"512345XXXXXX2346","card_holder":"M Smith","card_expiry":"2015-05-31","card_token":"hhyzk1va","amount":120,"decimal_amount":1.2,"successful":true,"message":"Approved","reference":"5f57a4d4-494e-419c-86f1-b97af1ac3ca6","currency":"AUD","transaction_id":"071-P-KCE1UEL7","settlement_date":"2014-05-22","transaction_date":"2014-05-21T14:17:26+10:00","response_code":"00","captured":true,"captured_amount":120},"errors":[],"test":true}
 
         /// <summary>
         /// Indicates if the request was successful or not
         /// </summary>
-        public bool Successful { get { return successful; } }
+		[JsonProperty("successful")]
+		public Boolean Successful { get; set; }
 
         /// <summary>
         /// Errors for the request
         /// </summary>
-        public IList<string> Errors { get { return errors; } }
+		[JsonProperty("errors")]
+		public IList<string> Errors { get; set; }
+
+		[JsonProperty("fraud_messages")]
+		public IList<string> FraudMessages { get; set; } 
 
         /// <summary>
         /// The result object
         /// </summary>
-        public IRecord Result { get { return result; } }
+		[JsonProperty("response")]
+		public T Result { get; set; }
 
         /// <summary>
         /// Indicates if the request was in test mode or live.
         /// </summary>
-        public bool IsTest { get { return test; } }
+		[JsonProperty("test")]
+		public bool IsTest { get; set; }
 
         /// <summary>
         /// The number of records in this response
         /// </summary>
-        public int Records { get { return records; } }
+		[JsonProperty("records")]
+		public int Records { get; set; }
 
         /// <summary>
         /// The total number of records in the response
         /// </summary>
-        public int TotalRecords { get { return total_records; } }
+		[JsonProperty("total_records")]
+		public int TotalRecords { get; set; }
 
         /// <summary>
         /// The page number of the current response
         /// </summary>
-        public int Page { get { return page; } }
+		[JsonProperty("pages")]
+		public int Page { get; set; }
 
         /// <summary>
         /// Number of pages in the results
         /// </summary>
-        public int TotalPages { get { return total_pages; } }
-
-        /// <summary>
-        /// Instantiates a new response for a Purchase transaction
-        /// </summary>
-        /// <param name="jsonResponse">The Raw JSON input</param>
-        /// <returns>Response</returns>
-        public static Response ParsePurchase(JsonValue response)
-        {
-            Response obj = ParseBase(response);
-
-            obj.result = Purchase.Parse(response["response"]);
-
-            return obj;
-        }
-
-        /// <summary>
-        /// Instantiates a new base response object.
-        /// </summary>
-        /// <param name="response">The JSON input from the API calls</param>
-        /// <returns>Response</returns>
-        public static Response ParseBase (JsonValue response)
-		{
-			var obj = new Response ();
-			try {
-				obj.test = response ["test"].ReadAs<bool> (false);
-				obj.successful = response ["successful"].ReadAs<bool> (false);
-
-				// Optionals
-				if (response.ContainsKey ("total_pages"))
-					obj.total_pages = response ["total_pages"].ReadAs<int> (0);
-				if (response.ContainsKey ("page"))
-					obj.page = response ["page"].ReadAs<int> (0);
-				if (response.ContainsKey ("total_records"))
-					obj.total_records = response ["total_records"].ReadAs<int> (0);
-				if (response.ContainsKey ("records"))
-					obj.records = response ["records"].ReadAs<int> (0);
-
-				foreach (var error in (JsonArray)response["errors"]) {
-					obj.errors.Add (error.ReadAs<string> ());
-				}
-			} catch (Exception ex) {
-				System.Diagnostics.Debugger.Log(1, "Parse", 
-				                                String.Format("Exception caught attempting to parse response. {0}. Response content: {1}", 
-				              ex.Message, 
-				              response.ToString()));
-
-				throw;
-			}
-
-            return obj;
-        }
-
-        /// <summary>
-        /// Instantiates a new response for a TokenizeCard transaction
-        /// </summary>
-        /// <param name="jsonResponse">The Raw JSON input</param>
-        /// <returns>Response</returns>
-        public static Response ParseTokenized(JsonValue response)
-        {
-            var obj = ParseBase(response);
-
-            obj.result = CreditCard.Parse(response["response"]);
-            return obj;
-
-        }
-
-        /// <summary>
-        /// Instantiates a new response for a Refund transaction
-        /// </summary>
-        /// <param name="jsonResponse">The Raw JSON input</param>
-        /// <returns>Response</returns>
-        public static Response ParseRefund(JsonValue response)
-        {
-            var obj = ParseBase(response);
-
-            obj.result = Refund.Parse(response["response"]);
-            return obj;
-        }
-
-        /// <summary>
-        /// Instantiates a new response for a Plan
-        /// </summary>
-        /// <param name="jsonResponse">The Raw JSON input</param>
-        /// <returns>Response</returns>
-        public static Response ParsePlan(JsonValue response)
-        {
-            var obj = ParseBase(response);
-
-            obj.result = Plan.Parse(response["response"]);
-
-            return obj;
-        }
-
-        /// <summary>
-        /// Instantiates a new response for a Customer
-        /// </summary>
-        /// <param name="jsonResponse">The Raw JSON input</param>
-        /// <returns>Response</returns>
-        public static Response ParseCustomer(JsonValue response)
-        {
-            var obj = ParseBase(response);
-
-            obj.result = Customer.Parse(response["response"]);
-
-            return obj;
-        }
-
-        /// <summary>
-        /// Instantiates a new response for a Subscription
-        /// </summary>
-        /// <param name="jsonResponse">The Raw JSON input</param>
-        /// <returns>Response</returns>
-        public static Response ParseSubscription(JsonValue response)
-        {
-            var obj = ParseBase(response);
-
-            obj.result = Subscription.Parse(response["response"]);
-
-            return obj;
-        }
+		[JsonProperty("total_pages")]
+		public int TotalPages { get; set; }
     }
 }

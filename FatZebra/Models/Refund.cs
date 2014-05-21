@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Json;
+using Newtonsoft.Json;
 
 namespace FatZebra
 {
@@ -11,58 +11,38 @@ namespace FatZebra
         /// <summary>
         /// The Transaction ID
         /// </summary>
+		[JsonProperty("id")]
         public string ID { get; set; }
 
         /// <summary>
         /// Indicates the success of the refund
         /// </summary>
-        public bool Successful { get; set; }
+		[JsonProperty("successful")]
+		public bool Successful { get; set; }
 
         /// <summary>
         /// The Refund amount
         /// </summary>
-        public int Amount { get; set; }
+		[JsonProperty("amount")]
+		public int Amount { get; set; }
 
         /// <summary>
         /// The authorization ID
         /// </summary>
-        public string Authorization { get; set; }
+		[JsonProperty("authorization")]
+		public string Authorization { get; set; }
 
         /// <summary>
         /// Result Message
         /// </summary>
-        public string Message { get; set; }
+		[JsonProperty("message")]
+		public string Message { get; set; }
 
         /// <summary>
-        /// The original transaction ID
+		/// The response code
         /// </summary>
-        public string TransactionID { get; set; }
-
-        /// <summary>
-        /// Instantiates a new Refund object from a JSON response
-        /// </summary>
-        /// <param name="json">The JSON response</param>
-        /// <returns>Refund</returns>
-        public static Refund Parse(JsonValue json)
-        {
-            var obj = new Refund();
-
-
-            if (json.ContainsKey("id") && json["id"] != null)
-                obj.ID = json["id"].ReadAs<string>();
-            if (json.ContainsKey("authorization") && json["authorization"] != null)
-                obj.Authorization = json["authorization"].ReadAs<string>();
-            if (json.ContainsKey("successful") && json["successful"] != null)
-                obj.Successful = json["successful"].ReadAs<bool>();
-            if (json.ContainsKey("amount") && json["amount"] != null)
-                obj.Amount = json["amount"].ReadAs<int>();
-            if (json.ContainsKey("message") && json["message"] != null)
-                obj.Message = json["message"].ReadAs<string>();
-            if (json.ContainsKey("transaction_id") && json["transaction_id"] != null)
-                obj.TransactionID = json["transaction_id"].ReadAs<string>();
-
-            return obj;
-        }
+		[JsonProperty("response_code")]
+		public string ResponseCode { get; set; }
 
         /// <summary>
         /// Performs a refund of an existing transaction.
@@ -71,15 +51,16 @@ namespace FatZebra
         /// <param name="originalTransactionNumber">The original transaction to apply the refund against.</param>
         /// <param name="reference">The reference for the refund.</param>
         /// <returns>Response</returns>
-        public static Response Create(int amount, string originalTransactionNumber, string reference)
+		public static Response<Refund> Create(int amount, string originalTransactionNumber, string reference)
         {
-            var payload = new JsonObject();
-            payload.Add("transaction_id", originalTransactionNumber);
-            payload.Add("amount", amount);
-            payload.Add("reference", reference);
-            payload.Add("test", Gateway.TestMode);
+			var req = new Requests.Refund {
+				TransactionID = originalTransactionNumber,
+				Amount = amount,
+				Reference = reference,
+				TestMode = Gateway.TestMode
+			};
 
-            return Response.ParseRefund(Gateway.Post("refunds.json", payload));
+			return Gateway.Post<Refund>("refunds.json", req);
         }
     }
 }

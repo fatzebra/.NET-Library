@@ -7,7 +7,8 @@ namespace FatZebra
 		Unknown,
 		Accept,
 		Challenge,
-		Deny
+		Deny,
+		Error
 	}
 }
 

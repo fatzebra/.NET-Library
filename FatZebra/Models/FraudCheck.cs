@@ -34,6 +34,12 @@ namespace FatZebra
 		[JsonProperty("device_id")]
 		public string DeviceID { get; set; }
 
+		/// <summary>
+		/// The merchants website, if different to the main website in Fat Zebra's records
+		/// </summary>
+		[JsonProperty("website")]
+		public string Website { get; set; }
+
 		public FraudCheck()
 		{
 			this.OrderItems = new List<OrderItem> ();

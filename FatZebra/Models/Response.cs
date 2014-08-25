@@ -3,23 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace FatZebra
 {
 	public class Response<T>
     {
-//        internal bool successful = false;
-        internal IList<String> errors = new List<string>();
-		internal IList<String> fraudCheckMessages = new List<string>();
-//		internal T result = default(T);
-//        internal bool test = false;
-//        internal int records = 0;
-//        internal int total_records = 0;
-//        internal int page = 0;
-//        internal int total_pages = 0;
-
-		// {"successful":true,"response":{"authorization":1400645846,"id":"071-P-KCE1UEL7","card_number":"512345XXXXXX2346","card_holder":"M Smith","card_expiry":"2015-05-31","card_token":"hhyzk1va","amount":120,"decimal_amount":1.2,"successful":true,"message":"Approved","reference":"5f57a4d4-494e-419c-86f1-b97af1ac3ca6","currency":"AUD","transaction_id":"071-P-KCE1UEL7","settlement_date":"2014-05-22","transaction_date":"2014-05-21T14:17:26+10:00","response_code":"00","captured":true,"captured_amount":120},"errors":[],"test":true}
-
         /// <summary>
         /// Indicates if the request was successful or not
         /// </summary>
@@ -29,11 +18,9 @@ namespace FatZebra
         /// <summary>
         /// Errors for the request
         /// </summary>
+		[DefaultValue(default(List<String>))]
 		[JsonProperty("errors")]
 		public IList<string> Errors { get; set; }
-
-		[JsonProperty("fraud_messages")]
-		public IList<string> FraudMessages { get; set; } 
 
         /// <summary>
         /// The result object

@@ -16,6 +16,7 @@ namespace FatZebra
     {
         private const string LIVE_GATEWAY_ADDRESS = "gateway.fatzebra.com.au";
         private const string SANDBOX_GATEWAY_ADDRESS = "gateway.sandbox.fatzebra.com.au";
+		private static JsonSerializerSettings _serializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
         private static string _version = "1.0";
 		private static string _gwAddress = Gateway.LIVE_GATEWAY_ADDRESS;
@@ -116,7 +117,7 @@ namespace FatZebra
 			{
 				var reqStream = client.GetRequestStream();
 				StreamWriter sw = new StreamWriter(reqStream);
-				sw.Write(JsonConvert.SerializeObject (payload, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+				sw.Write(JsonConvert.SerializeObject (payload, Formatting.Indented, _serializerSettings));
 				sw.Close();
 
 				var result = (HttpWebResponse)client.GetResponse();
@@ -169,7 +170,7 @@ namespace FatZebra
 			var reqStream = client.GetRequestStream();
 			StreamWriter sw = new StreamWriter(reqStream);
 
-			sw.Write(JsonConvert.SerializeObject (payload, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+			sw.Write(JsonConvert.SerializeObject (payload, Formatting.Indented, _serializerSettings));
 			sw.Close();
 
 			try
@@ -293,10 +294,9 @@ namespace FatZebra
 		{
 			var client = (HttpWebRequest)System.Net.WebRequest.Create (Gateway.GetURI (endpoint));
 			client.Credentials = new System.Net.NetworkCredential (Gateway.Username, Gateway.Token);
-			client.UserAgent = String.Format ("Official .NET {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+			client.UserAgent = String.Format ("Official .NET {0}", Assembly.GetCallingAssembly().GetName().Version.ToString());
 			client.PreAuthenticate = true;
 			client.ContentType = "application/json";
-			client.Proxy = new WebProxy ("http://127.0.0.1:8888");
 			if (Gateway.Proxy != null) {
 				client.Proxy = Gateway.Proxy;
 			}

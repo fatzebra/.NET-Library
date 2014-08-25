@@ -54,7 +54,7 @@ namespace FatZebra.Tests
             Customer.Create("Jim", "Smith", customer_id, "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
 
             var sub_id = Guid.NewGuid().ToString();
-			var subscription = Subscription.Create(customer_id, plan_id, "BiAnnually", sub_id, DateTime.Now.AddDays(1), true);
+			var subscription = Subscription.Create(customer_id, plan_id, "Monthly", sub_id, DateTime.Now.AddDays(1), true);
 
             var sub = subscription.Result;
             Assert.IsTrue(sub.IsActive);            

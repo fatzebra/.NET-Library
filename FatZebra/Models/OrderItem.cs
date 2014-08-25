@@ -29,7 +29,7 @@ namespace FatZebra
 		/// The base item cost for the minimum quantity
 		/// </summary>
 		/// <value>The item cost.</value>
-		[JsonProperty("item_cost")]
+		[JsonProperty("cost")]
 		public float ItemCost { get; set; }
 		/// <summary>
 		/// The line total (ItemCost * Quantity)

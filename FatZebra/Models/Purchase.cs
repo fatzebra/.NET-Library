@@ -88,12 +88,28 @@ namespace FatZebra
 		[JsonProperty("reference")]
 		public string Reference { get; set; }
 
+		/// <summary>
+		/// The acquirer response code (00, 05 etc)
+		/// </summary>
+		/// <value>The response code.</value>
 		[JsonProperty("response_code")]
 		public string ResponseCode { get; set; }
 
+		/// <summary>
+		/// The fraud check result (if enabled for this transaction)
+		/// </summary>
+		/// <value>The fraud check result.</value>
 		[JsonProperty("fraud_result")]
 		[DefaultValue(FraudResult.Unknown)]
 		public FraudResult FraudCheckResult { get; set; }
+
+		/// <summary>
+		/// Any fraud-check response messages (this may be populated if there are any fraud check errors, or fraud rules are triggered).
+		/// </summary>
+		/// <value>The fraud messages.</value>
+		[DefaultValue(default(List<string>))]
+		[JsonProperty("fraud_messages")]
+		public IList<string> FraudMessages { get; set; } 
 
 		/// <summary>
 		/// Fetches a purchase from the server.

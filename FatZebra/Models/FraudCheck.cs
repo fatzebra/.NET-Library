@@ -40,12 +40,19 @@ namespace FatZebra
 		[JsonProperty("website")]
 		public string Website { get; set; }
 
+		/// <summary>
+		/// Custom Parameters for fraud checks
+		/// </summary>
+		[JsonProperty("custom")]
+		public Dictionary<int, String> Custom { get; set; }
+
 		public FraudCheck()
 		{
 			this.OrderItems = new List<OrderItem> ();
 			this.Recipients = new List<Recipient> ();
 			this.ShippingAddress = new ShippingAddress ();
 			this.Customer = new OrderCustomer ();
+			this.Custom = new Dictionary<int, string> ();
 		}
 	}
 }

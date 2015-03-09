@@ -29,7 +29,7 @@ namespace FatZebra
 		/// The customers Date Of Birth
 		/// </summary>
 		[JsonProperty("date_of_birth")]
-		public DateTime DOB { get; set; }
+		public DateTime? DOB { get; set; }
 		/// <summary>
 		/// The customers Address (Line 1)
 		/// </summary>

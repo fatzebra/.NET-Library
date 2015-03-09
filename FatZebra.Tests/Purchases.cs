@@ -70,7 +70,7 @@ namespace FatZebra.Tests
 			fc.Customer.FirstName = "James";
 			fc.Customer.LastName = "Smith";
 			fc.Customer.Email = "accept@email.com";
-			fc.Customer.DOB = DateTime.Today.AddYears (-20);
+			fc.Customer.DOB = null;
 			fc.Customer.AddressLine1 = "23 Smith Road";
 			fc.Customer.City = "Canberra";
 			fc.Customer.PostCode = "2600";
@@ -177,6 +177,7 @@ namespace FatZebra.Tests
 
 			fc.Recipients.Add (recip);
 			fc.Website = "http://www.webite.com";
+			fc.Custom.Add (13, "Donation");
 
 			var response = Purchase.Create(120, "M Smith", "5123456789012346", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1", "AUD", fc);
 			Assert.IsTrue(response.Successful);

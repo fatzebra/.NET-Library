@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace FatZebra.Requests
@@ -38,6 +39,9 @@ namespace FatZebra.Requests
 
 		[JsonProperty("card_token")]
 		public string CardToken { get; set; }
+
+		[JsonProperty("extra")]
+		public Dictionary<String, Object> Extra { get; set; }
 	}
 }
 

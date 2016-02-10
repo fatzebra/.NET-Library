@@ -17,6 +17,8 @@ namespace FatZebra.Tests
             FatZebra.Gateway.Token = "TEST";
             Gateway.SandboxMode = true;
             Gateway.TestMode = true;
+			Gateway.GatewayAddress = "fatapi.dev";
+			Gateway.VerifySSL = false;
         }
 
         [Test]
@@ -124,6 +126,22 @@ namespace FatZebra.Tests
 
 			Assert.AreEqual(response.Result.CardType, "MasterCard");
 			Assert.AreEqual(response.Result.FraudCheckResult, FraudResult.Accept);
+		}
+
+		[Test]
+		public void PurchaseWithExtraVars() {
+			var extras = new Dictionary<String, Object> ();
+			extras.Add ("ecm", "22");
+			var response = Purchase.Create(120, "M Smith", "5123456789012346", DateTime.Now.AddYears(1), "123", Guid.NewGuid().ToString(), "123.0.0.1", "AUD", null, extras);
+			Assert.IsTrue(response.Successful);
+			Assert.IsTrue(response.Result.Successful);
+			Assert.IsNotNull(response.Result.ID);
+			Assert.AreEqual(response.Errors.Count, 0);
+			Assert.AreEqual(response.Result.Amount, 120);
+
+			Assert.AreEqual(response.Result.DecimalAmount, 1.20);
+
+			Assert.AreEqual(response.Result.CardType, "MasterCard");
 		}
 
 		[Test]

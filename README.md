@@ -1,7 +1,17 @@
 ﻿# Fat Zebra .NET Library v2.0.5
 
-It's been a while since I've written in C#, so please excuse my code if it seems lacking in quality.
+## Support for TLS 1.1 and TLS 1.2
+In order to support the updated gateway endpoint configuration for the retirement of TLS 1.0 the following changes may
+be required for your application:
 
+* Update to .NET 4.5 or above
+* Add the following code prior to making a call into the Gateway:
+
+```
+System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
+```
+
+___
 Currently there is support for:
 
 * Purchase with Card Details

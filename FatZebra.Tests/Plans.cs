@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using FatZebra;
 
-namespace FatZebra.Tests
+namespace FatZebraTests.Tests
 {
     [TestFixture]
     public class Plans
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             FatZebra.Gateway.Username = "TEST";

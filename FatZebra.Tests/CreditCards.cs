@@ -11,7 +11,7 @@ namespace FatZebra.Tests
     public class CreditCardsTest
     {
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             FatZebra.Gateway.Username = "TEST";

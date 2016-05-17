@@ -10,15 +10,13 @@ namespace FatZebra.Tests
     [TestFixture]
     public class Purchases
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             FatZebra.Gateway.Username = "TEST";
             FatZebra.Gateway.Token = "TEST";
             Gateway.SandboxMode = true;
             Gateway.TestMode = true;
-			Gateway.GatewayAddress = "fatapi.dev";
-			Gateway.VerifySSL = false;
         }
 
         [Test]

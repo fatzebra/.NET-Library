@@ -2,15 +2,16 @@ using System;
 using NUnit.Framework;
 using FatZebra;
 
-namespace FatZebra.Tests
+namespace FatZebraTests.Tests
 {
 	[TestFixture()]
 	public class Test
 	{
-		[TestFixtureSetUp()]
+		[OneTimeSetUp()]
 		public void Init() 
 		{
-			FatZebra.Gateway.Username = "TEST";
+//            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
+            FatZebra.Gateway.Username = "TEST";
 			FatZebra.Gateway.Token = "TEST";
 			Gateway.SandboxMode = true;
 			Gateway.TestMode = true;

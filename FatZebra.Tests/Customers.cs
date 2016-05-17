@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using FatZebra;
 
-namespace FatZebra.Tests
+namespace FatZebraTests.Tests
 {
     [TestFixture]
     public class Customers
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             FatZebra.Gateway.Username = "TEST";
@@ -45,7 +45,7 @@ namespace FatZebra.Tests
             var customer = Customer.Create("Jim", "Smith", Guid.NewGuid().ToString(), "jim@smith.com", "Jim Smith", "5123456789012346", "123", DateTime.Now.AddYears(1));
             var cust = customer.Result;
 
-			Assert.IsTrue(cust.UpdateCard("Wally Smith", "4444333322221111", DateTime.Now.AddYears(1), "1234"));
+			Assert.IsTrue(cust.UpdateCard("Wally Smith", "4444333322221111", DateTime.Now.AddYears(1), "123"));
         }
     }
 }

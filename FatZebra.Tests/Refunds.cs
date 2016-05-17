@@ -9,7 +9,7 @@ namespace FatZebra.Tests
     [TestFixture]
     public class Refunds
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             FatZebra.Gateway.Username = "TEST";
@@ -28,7 +28,7 @@ namespace FatZebra.Tests
             Assert.IsTrue(refund.Successful);
             Assert.IsTrue(refund.Result.Successful);
             Assert.IsNotNull(refund.Result.ID);
-            Assert.AreEqual(((Refund)refund.Result).Amount, -120);
+            Assert.AreEqual(((Refund)refund.Result).Amount, 120);
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace FatZebra.Tests
             Assert.IsTrue(refund.Successful);
             Assert.IsTrue(refund.Result.Successful);
             Assert.IsNotNull(refund.Result.ID);
-            Assert.AreEqual(((Refund)refund.Result).Amount, -120);
+            Assert.AreEqual(((Refund)refund.Result).Amount, 120);
         }
     }
 }

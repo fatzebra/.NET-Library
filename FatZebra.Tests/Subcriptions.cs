@@ -9,7 +9,7 @@ namespace FatZebra.Tests
     [TestFixture]
     public class Subcriptions
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Init()
         {
 

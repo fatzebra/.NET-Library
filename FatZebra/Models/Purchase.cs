@@ -240,25 +240,25 @@ namespace FatZebra
         /// <param name="cvv">card CVV</param>
         /// <param name="reference">purchase reference (e.g. invoice number)</param>
         /// <param name="customer_ip">the custokers IP address</param>
-		/// <param name="currency">The three-letter ISO-4217 currency code (see http://en.wikipedia.org/wiki/ISO_4217#Active_codes)</para>
+		/// <param name="currency">The three-letter ISO-4217 currency code (see http://en.wikipedia.org/wiki/ISO_4217#Active_codes for full list)</para>
         /// <returns>Response</returns>
 		public static Response<Purchase> Create(int amount, string token, string cvv, string reference, string customer_ip, string currency)
         {
 			return Purchase.Create(amount, token, cvv, reference, customer_ip, currency, null);
         }
 
-		/// <summary>
-		/// Purchase with a tokenized card, specifying the currency code and running fraud checks
-		/// </summary>
-		/// <param name="amount">purchase amount as integer</param>
-		/// <param name="token">card token</param>
-		/// <param name="cvv">card CVV</param>
-		/// <param name="reference">purchase reference (e.g. invoice number)</param>
-		/// <param name="customer_ip">the custokers IP address</param>
-		/// <param name="currency">The three-letter ISO-4217 currency code (see http://en.wikipedia.org/wiki/ISO_4217#Active_codes)</para>
-		/// /// <param name="fraud_details">The fraud check details</param>
-		/// <returns>Response</returns>
-		public static Response<Purchase> Create(int amount, string token, string cvv, string reference, string customer_ip, string currency, FraudCheck fraud_details)
+        /// <summary>
+        /// Purchase with a tokenized card, specifying the currency code and running fraud checks
+        /// </summary>
+        /// <param name="amount">purchase amount as integer</param>
+        /// <param name="token">card token</param>
+        /// <param name="cvv">card CVV</param>
+        /// <param name="reference">purchase reference (e.g. invoice number)</param>
+        /// <param name="customer_ip">the custokers IP address</param>
+        /// <param name="currency">The three-letter ISO-4217 currency code (see http://en.wikipedia.org/wiki/ISO_4217#Active_codes for full list)</para>
+        /// /// <param name="fraud_details">The fraud check details</param>
+        /// <returns>Response</returns>
+        public static Response<Purchase> Create(int amount, string token, string cvv, string reference, string customer_ip, string currency, FraudCheck fraud_details)
 		{
 			var req = new Requests.Purchase {
 				Amount = amount,

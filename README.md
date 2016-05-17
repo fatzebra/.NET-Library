@@ -5,11 +5,6 @@ In order to support the updated gateway endpoint configuration for the retiremen
 be required for your application:
 
 * Update to .NET 4.5 or above
-* Add the following code prior to making a call into the Gateway:
-
-```
-System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
-```
 
 ___
 Currently there is support for:

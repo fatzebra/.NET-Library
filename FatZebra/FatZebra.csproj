@@ -3,14 +3,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D163D20E-C258-4CC3-9DFC-0F933B1E9F1C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FatZebra</RootNamespace>
     <AssemblyName>FatZebra</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -45,6 +45,8 @@
     <Compile Include="Gateway.cs" />
     <Compile Include="Models\CreditCard.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\DirectCredit.cs" />
+    <Compile Include="Models\DirectDebit.cs" />
     <Compile Include="Models\IRecord.cs" />
     <Compile Include="Models\Plan.cs" />
     <Compile Include="Models\Subscription.cs" />
@@ -69,12 +71,11 @@
     <Compile Include="Models\Requests\Subscription.cs" />
     <Compile Include="Models\Requests\CustomerAddress.cs" />
     <Compile Include="Models\SubscriptionFrequency.cs" />
+    <Compile Include="Models\DirectEntry.cs" />
+    <Compile Include="Models\Requests\DirectEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -84,8 +85,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <Folder Include="Models\Requests\" />
-    <Folder Include="JsonConverters\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

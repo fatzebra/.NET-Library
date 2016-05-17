@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FatZebra", "FatZebra\FatZebra.csproj", "{D163D20E-C258-4CC3-9DFC-0F933B1E9F1C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{93EA9538-89A5-4814-B80C-CD78D203E332}"
@@ -51,10 +53,10 @@ Global
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = FatZebra\FatZebra.csproj
 	EndGlobalSection
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = FatZebra Library.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = FatZebra Library.vsmdi
 	EndGlobalSection
 EndGlobal

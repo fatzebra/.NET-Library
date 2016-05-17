@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Net;
+using System.Security.Principal;
 using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
@@ -216,7 +217,9 @@ namespace FatZebra
         {
             bool success = false;
 
-            var response = (HttpWebResponse)Gateway.GetClient("ping.json").GetResponse();
+            var c = Gateway.GetClient("ping.json");
+
+            var response = (HttpWebResponse)c.GetResponse();
             success = response.StatusCode == HttpStatusCode.OK;
 
             return success;
@@ -292,16 +295,25 @@ namespace FatZebra
         /// <returns>HttpWebRequest</returns>
         private static HttpWebRequest GetClient (string endpoint)
 		{
-			var client = (HttpWebRequest)System.Net.WebRequest.Create (Gateway.GetURI (endpoint));
-			client.Credentials = new System.Net.NetworkCredential (Gateway.Username, Gateway.Token);
-			client.UserAgent = String.Format ("Official .NET {0}", Assembly.GetCallingAssembly().GetName().Version.ToString());
-			client.PreAuthenticate = true;
-			client.ContentType = "application/json";
+            SetSecurityProtocols();
+            var client = (HttpWebRequest)System.Net.WebRequest.Create (Gateway.GetURI (endpoint));
+            client.ServicePoint.CloseConnectionGroup(client.ConnectionGroupName);
+            client.Headers.Add("Authorization", String.Format("Basic {0}", Convert.ToBase64String(Encoding.UTF8.GetBytes(String.Format("{0}:{1}", Gateway.Username, Gateway.Token)))));
+            client.UserAgent = String.Format ("Official .NET {0}", Assembly.GetCallingAssembly().GetName().Version.ToString());
+            client.ContentType = "application/json";
 			if (Gateway.Proxy != null) {
 				client.Proxy = Gateway.Proxy;
 			}
 
             return client;
+        }
+
+        /// <summary>
+        /// Sets the security protocols supported in the ServicePointManager to TLSv1.1 and TLSv1.2.
+        /// </summary>
+        private static void SetSecurityProtocols()
+        {
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
         }
 
         /// <summary>

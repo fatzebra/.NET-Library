@@ -1,4 +1,4 @@
-﻿# Fat Zebra .NET Library v2.0.5
+﻿# Fat Zebra .NET Library v2.1.7
 
 ## Support for TLS 1.1 and TLS 1.2
 In order to support the updated gateway endpoint configuration for the retirement of TLS 1.0 the following changes may

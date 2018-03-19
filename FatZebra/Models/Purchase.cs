@@ -168,20 +168,7 @@ namespace FatZebra
         /// <returns>Response</returns>
         public static Response<Purchase> Create(int amount, string card_holder, string card_number, DateTime card_expiry, string cvv, string reference, string customer_ip, string currency, FraudCheck fraud_details)
         {
-            var req = new Requests.Purchase {
-                Amount = amount,
-                Reference = reference,
-                CustomerIP = customer_ip,
-                CardNumber = card_number,
-                CardHolder = card_holder,
-                CardExpiry = card_expiry,
-                SecurityCode = cvv,
-                Currency = currency,
-                TestMode = Gateway.TestMode,
-                FraudDetails = fraud_details
-            };
-
-            return Gateway.Post<Purchase>("purchases.json", req);
+            return Purchase.Create(amount, card_holder, card_number, card_expiry, cvv, reference, customer_ip, currency, fraud_details, null);
         }
 
         /// <summary>
@@ -284,22 +271,11 @@ namespace FatZebra
         /// <param name="reference">purchase reference (e.g. invoice number)</param>
         /// <param name="customer_ip">the custokers IP address</param>
         /// <param name="currency">The three-letter ISO-4217 currency code (see http://en.wikipedia.org/wiki/ISO_4217#Active_codes for full list)</para>
-        /// /// <param name="fraud_details">The fraud check details</param>
+        /// <param name="fraud_details">The fraud check details</param>
         /// <returns>Response</returns>
         public static Response<Purchase> Create(int amount, string token, string cvv, string reference, string customer_ip, string currency, FraudCheck fraud_details)
         {
-            var req = new Requests.Purchase {
-                Amount = amount,
-                Reference = reference,
-                CustomerIP = customer_ip,
-                CardToken = token,
-                SecurityCode = cvv,
-                Currency = currency,
-                TestMode = Gateway.TestMode,
-                FraudDetails = fraud_details
-            };
-
-            return Gateway.Post<Purchase>("purchases.json", req);
+            return Purchase.Create(amount, token, cvv, reference, customer_ip, currency, fraud_details, null);
         }
 
         /// <summary>

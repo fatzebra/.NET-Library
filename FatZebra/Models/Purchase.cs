@@ -180,7 +180,7 @@ namespace FatZebra
                 TestMode = Gateway.TestMode,
                 FraudDetails = fraud_details
             };
-                    
+
             return Gateway.Post<Purchase>("purchases.json", req);
         }
 
@@ -217,6 +217,34 @@ namespace FatZebra
             return Gateway.Post<Purchase>("purchases.json", req);
         }
 
+        /// <summary>
+        /// Purchase with a tokenized card, specifying the currency code and running fraud checks
+        /// </summary>
+        /// <param name="amount">purchase amount as integer</param>
+        /// <param name="token">card token</param>
+        /// <param name="cvv">card CVV</param>
+        /// <param name="reference">purchase reference (e.g. invoice number)</param>
+        /// <param name="customer_ip">the custokers IP address</param>
+        /// <param name="currency">The three-letter ISO-4217 currency code (see http://en.wikipedia.org/wiki/ISO_4217#Active_codes for full list)</param>
+        /// <param name="fraud_details">The fraud check details</param>
+        /// <param name="extra">Extra params for the request (such as ECM flags) - optional - pass null if not used</param>
+        /// <returns>Response</returns>
+        public static Response<Purchase> Create(int amount, string token, string cvv, string reference, string customer_ip, string currency, FraudCheck fraud_details, Dictionary<String, Object> extra)
+        {
+            var req = new Requests.Purchase {
+                Amount = amount,
+                Reference = reference,
+                CustomerIP = customer_ip,
+                CardToken = token,
+                SecurityCode = cvv,
+                Currency = currency,
+                TestMode = Gateway.TestMode,
+                FraudDetails = fraud_details,
+                Extra = extra
+            };
+
+            return Gateway.Post<Purchase>("purchases.json", req);
+        }
 
         /// <summary>
         /// Purchase with a tokenized card

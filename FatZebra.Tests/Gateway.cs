@@ -2,7 +2,7 @@ using System;
 using NUnit.Framework;
 using FatZebra;
 
-namespace FatZebraTests.Tests
+namespace FatZebra.Tests
 {
 	[TestFixture()]
 	public class Test

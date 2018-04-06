@@ -109,7 +109,14 @@ namespace FatZebra
         /// <value>The fraud messages.</value>
         [DefaultValue(default(List<string>))]
         [JsonProperty("fraud_messages")]
-        public IList<string> FraudMessages { get; set; } 
+        public IList<string> FraudMessages { get; set; }
+
+        /// <summary>
+        /// The settlement date.
+        /// </summary>
+        /// <value>The settlement date.</value>
+        [JsonProperty("settlement_date")]
+        public DateTime? SettlementDate { get; set; }
 
         /// <summary>
         /// Fetches a purchase from the server.

@@ -32,6 +32,7 @@ namespace FatZebra.Tests
             Assert.AreEqual(((Purchase)response.Result).DecimalAmount, 1.20);
 
             Assert.AreEqual(((Purchase)response.Result).CardType, "MasterCard");
+            Assert.AreEqual(((Purchase)response.Result).SettlementDate, DateTime.Now.Date);
         }
 
         [Test]

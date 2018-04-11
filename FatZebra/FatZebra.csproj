@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NuGet.Build.Packaging.0.2.0\build\NuGet.Build.Packaging.props" Condition="Exists('..\packages\NuGet.Build.Packaging.0.2.0\build\NuGet.Build.Packaging.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -11,6 +12,15 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <PackOnBuild>true</PackOnBuild>
+    <PackageId>FatZebra.Gateway</PackageId>
+    <PackageVersion>2.3.0</PackageVersion>
+    <Authors>Fat Zebra</Authors>
+    <Description>.NET LIbrary for the Fat Zebra Payment Gateway</Description>
+    <Owners>Fat Zebra</Owners>
+    <PackageProjectUrl>https://github.com/fatzebra/.NET-Library</PackageProjectUrl>
+    <Summary>API for Fat Zebra Payment Gateway</Summary>
+    <Title>Fat Zebra Gateway</Title>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -73,6 +83,7 @@
     <Compile Include="Models\SubscriptionFrequency.cs" />
     <Compile Include="Models\DirectEntry.cs" />
     <Compile Include="Models\Requests\DirectEntry.cs" />
+    <Compile Include="EmptyClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -89,4 +100,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <Import Project="..\packages\NuGet.Build.Packaging.0.2.0\build\NuGet.Build.Packaging.targets" Condition="Exists('..\packages\NuGet.Build.Packaging.0.2.0\build\NuGet.Build.Packaging.targets')" />
 </Project>
